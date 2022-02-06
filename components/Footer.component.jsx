@@ -26,18 +26,16 @@ const links = [
 
 const Footer = () => {
   return (
-    <section id="footer-section" className="bg-neutral-600 text-white">
-      <div className="grid grid-cols-2 h-full">
+    <section id="footer-section" className="text-white">
+      <div className="flex flex-col justify-center">
         {links.map((link) => (
-          <div
-            key={link.title}
-            className="box-border border border-neutral-500 flex flex-col justify-evenly items-center py-20 text-4xl"
-          >
-            <SocialIcon icon={link.title} />
-            <a href={link.link} target="_blank" rel="noopener noreferrer">
-              <p className=" font-sans font-bold">{link.displayTitle}</p>
-            </a>
-          </div>
+          <a href={link.link} target="_blank" rel="noopener noreferrer" key={link.title}>
+            <div className="py-4 text-5xl text-center hover:text-6xl hover:text-fc-green">
+              {/* <SocialIcon icon={link.title} /> */}
+
+              <p className="font-bold">{link.displayTitle}</p>
+            </div>
+          </a>
         ))}
       </div>
     </section>
