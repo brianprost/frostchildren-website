@@ -11,21 +11,40 @@ module.exports = {
       colors: {
         fc: {
           green: "#20FC40",
-        },
-      },
-      keyframes: {
-        blob: {
-          "0%": {
-            transform: "translate(0px, 0px) scale(1)",
-          },
-          "33%": {
-            transform: "translate(30px, -50px) scale(1.1)",
-          },
-          "66%": {
-            transform: "translate(-20px, 20px) scale(0.9)",
-          },
-          "100%": {
-            transform: "tranlate(0px, 0px) scale(1)",
+          album: {
+            blue: {
+              100: "#f1f6ff",
+              200: "#e3eeff",
+              300: "#d5e5ff",
+              400: "#c7ddff",
+              500: "#b9d4ff",
+              600: "#94aacc",
+              700: "#6f7f99",
+              800: "#4a5566",
+              900: "#252a33",
+            },
+            red: {
+              100: "#ecdee2",
+              200: "#dabdc4",
+              300: "#c79da7",
+              400: "#b57c89",
+              500: "#a25b6c",
+              600: "#824956",
+              700: "#613741",
+              800: "#41242b",
+              900: "#201216",
+            },
+            yellow: {
+              100: "#f6f1df",
+              200: "#ede3be",
+              300: "#e4d49e",
+              400: "#dbc67d",
+              500: "#a25b6c",
+              600: "#a8934a",
+              700: "#7e6e38",
+              800: "#544a25",
+              900: "#2a2513",
+            },
           },
         },
       },
