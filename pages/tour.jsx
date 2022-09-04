@@ -1,8 +1,9 @@
 import Script from "next/script";
 import React from "react";
 import { FrostLogo } from "../components/FrostLogo.component";
+import SeatedScript from "../components/Tour/SeatedScript.component";
 
-export default function Tour ({ showLogo }) {  
+export default function Tour({ showLogo }) {
   return (
     <section id="tour" className="bg-black mt-auto">
       {showLogo && (
@@ -11,17 +12,11 @@ export default function Tour ({ showLogo }) {
         </div>
       )}
       <div className="container w-auto max-w-lg mx-auto">
-        <div
-          id="seated-55fdf2c0"
-          data-artist-id="0dd41d4d-c9b0-41a5-b3a1-49f5d9d810b1"
-          data-css-version="2"
-          className="text-white"
-        ></div>
-        <Script src="https://widget.seated.com/app.js"></Script>
+        <SeatedScript />
       </div>
     </section>
   );
-};
+}
 
 Tour.defaultProps = {
   showLogo: true,
