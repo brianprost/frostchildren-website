@@ -5,6 +5,16 @@ import SocialIcon from "./SocialIcon.component";
 const links = [
   // sup tailwind. i want to use dynamic classnames for hover colors. AND YOU'RE MAKING ME WISH I USED STYLED COMPONENTS
   {
+    link: "/tour",
+    key: "Tour",
+    displayTitle: "TOUR",
+  },
+  {
+    link: "https://discord.gg/qZn6BqJXej",
+    key: "Discord",
+    displayTitle: "DISCORD",
+  },
+  {
     link: "https://www.instagram.com/thefrostchildren/",
     key: "Instagram",
     displayTitle: "INSTA",
@@ -29,7 +39,7 @@ const links = [
 const Footer = () => {
   return (
     <section id="footer-section" className="text-white">
-      <div className="flex flex-col justify-center">
+      <div className="flex flex-col justify-center sm:grid sm:grid-cols-2 sm:mt-28 sm:mb-4">
         {links.map((link, index) => (
           <FooterLink
             key={`FooterLinkTo${link.key}`}
