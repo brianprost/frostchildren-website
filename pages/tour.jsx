@@ -8,7 +8,7 @@ export default function Tour({ showLogo }) {
     <section id="tour" className="bg-black mt-auto">
       {showLogo && (
         <div className="row-span-1 w-full h-full lg:container lg:w-1/2 lg:mx-auto flex justify-center items-center">
-          <FrostLogo logoSize="w-1/2 h-1/2" />
+          <FrostLogo />
         </div>
       )}
       <div className="container w-auto max-w-lg mx-auto">
