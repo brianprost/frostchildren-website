@@ -7,8 +7,8 @@ export const FrostLogo = () => {
   const frostImages = `img/FROST_LEGIBLE_GREEN.webp`;
 
   return (
-      <div className="w-auto h-auto">
-        <img src={frostImages} alt="frost-children-logo" onClick={play} />
-      </div>
+    <div className="w-auto h-auto">
+      <img src={frostImages} alt="frost-children-logo" onClick={play} />
+    </div>
   );
 };

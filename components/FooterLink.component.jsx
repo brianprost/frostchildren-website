@@ -13,7 +13,11 @@ const FooterLink = ({ link, displayTitle }) => {
   };
 
   return (
-    <a href={link} target={ link.includes('http') ? '_blank' : '_self' } rel="noopener noreferrer">
+    <a
+      href={link}
+      target={link.includes("http") ? "_blank" : "_self"}
+      rel="noopener noreferrer"
+    >
       <div
         className="py-4 text-5xl text-center hover:text-6xl"
         onMouseEnter={() => toggleLinkColor(true)}

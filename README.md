@@ -1,1 +1,1 @@
-I hate the Frost Children. They stole my __fooking__ crops!
+I hate the Frost Children. They stole my **fooking** crops!
