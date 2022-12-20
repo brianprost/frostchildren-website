@@ -10,7 +10,7 @@ const links = [
     displayTitle: "TOUR",
   },
   {
-    link: "https://frostchildren.bigcartel.com/",
+    link: "https://frostchildren.limitedrun.com",
     key: "Merch",
     displayTitle: "MERCH",
   },
