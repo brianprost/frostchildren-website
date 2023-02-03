@@ -19,12 +19,12 @@ const FooterLink = ({ link, displayTitle }) => {
       rel="noopener noreferrer"
     >
       <div
-        className="py-4 text-5xl text-center hover:text-6xl"
+        className="py-4 text-8xl text-center hover:text-6xl"
         onMouseEnter={() => toggleLinkColor(true)}
         onMouseLeave={() => toggleLinkColor(false)}
       >
         {/* <SocialIcon icon={link.title} /> */}
-        <p className="font-bold" style={{ color: `${hoverColor}` }}>
+        <p className="font-aero font-bold" style={{ color: `${hoverColor}` }}>
           {displayTitle}
         </p>
       </div>

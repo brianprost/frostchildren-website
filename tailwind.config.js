@@ -49,8 +49,9 @@ module.exports = {
         },
       },
       fontFamily: {
-        serif: ["'Gambetta-Variable'"],
+        serif: ["'Aero-Font-One'"],
         sans: ["'Rowdies'"],
+        aero: ["'Aero-Font-One'"],
       },
     },
   },
