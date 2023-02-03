@@ -4,7 +4,7 @@ import useSound from "use-sound";
 export const FrostLogo = () => {
   const [play] = useSound("./audio/scream.opus");
 
-  const frostImages = `img/FROST_LEGIBLE_GREEN.webp`;
+  const frostImages = `img/abrys.webp`;
 
   return (
     <div className="w-auto h-auto">
