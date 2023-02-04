@@ -9,6 +9,7 @@ export default function Home() {
       <Head>
         <title>Frost Children</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <meta name="theme-color" content="#000000" />
       </Head>
       <div className="relative w-full max-w-lg min-h-screen">
         <div className="grid grid-rows-7 w-screen items-center">
