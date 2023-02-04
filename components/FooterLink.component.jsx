@@ -17,17 +17,17 @@ const FooterLink = ({ link, displayTitle }) => {
       href={link}
       target={link.includes("http") ? "_blank" : "_self"}
       rel="noopener noreferrer"
+      className="py-4 text-8xl text-center"
+      onMouseEnter={() => toggleLinkColor(true)}
+      onMouseLeave={() => toggleLinkColor(false)}
     >
-      <div
-        className="py-4 text-8xl text-center"
-        onMouseEnter={() => toggleLinkColor(true)}
-        onMouseLeave={() => toggleLinkColor(false)}
+      {/* <SocialIcon icon={link.title} /> */}
+      <p
+        className="font-aero font-bold transition duration-500 ease-in-out"
+        style={{ color: `${hoverColor}` }}
       >
-        {/* <SocialIcon icon={link.title} /> */}
-        <p className="font-aero font-bold transition duration-500 ease-in-out" style={{ color: `${hoverColor}` }}>
-          {displayTitle}
-        </p>
-      </div>
+        {displayTitle}
+      </p>
     </a>
   );
 };
