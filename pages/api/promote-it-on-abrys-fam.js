@@ -24,8 +24,13 @@ export default async function handler(req, res) {
     res.status(400).json({ error: "Please provide a url." });
     return;
   }
-  const publishResult = await postToInstagram(req.body.url, req.body.discordUser);
-
+  // due to the edge runtime, and my laziness, we need to reject PNG photos for now
+  if (req.body.url.endsWith(".png")) {
+    res.status(400).json({ error: "PNG photos are not supported. I know...annoying. Tell SleepRides to get on it." });
+    return;
+  }
   const { url, caption } = req.body;
+  const publishResult = await postToInstagram(url, discordUser);
+
   res.status(200).json({ popstarStatus: JSON.stringify(publishResult) });
 }
