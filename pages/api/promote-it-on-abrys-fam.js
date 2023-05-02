@@ -62,7 +62,7 @@ export default async function handler(req, res) {
       `discord/bots/promote-it-on-abrys-fam/${discordUser}_${imageFileName}`
     ),
     {
-      promotedOnAbrysFam: didPromoteToAbrysFamInstagram,
+      promoted_on_abrys_fam: didPromoteToAbrysFamInstagram,
     },
     { merge: true }
   );
