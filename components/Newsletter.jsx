@@ -3,11 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { BiX } from "react-icons/bi";
 
 export default function Newsletter() {
-  const [open, setOpen] = useState(false);
-
-  setTimeout(() => {
-    setOpen(true);
-  }, 5000);
+  const [open, setOpen] = useState(true);
 
   const cancelButtonRef = useRef(null);
 
