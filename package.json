@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@fontsource/rowdies": "^4.5.8",
+    "@headlessui/react": "^1.7.14",
     "firebase": "^9.21.0",
     "instagram-private-api": "^1.45.3",
     "next": "^13.3.1",
