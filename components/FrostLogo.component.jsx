@@ -16,7 +16,7 @@ export const FrostLogo = () => {
 
   return (
     <div className="w-auto h-auto">
-      <img src={frostImages} alt="frost-children-logo" onClick={playAudio()} />
+      <img src={frostImages} alt="frost-children-logo" onClick={() => playAudio()} />
     </div>
   );
 };
