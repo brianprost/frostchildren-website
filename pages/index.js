@@ -2,6 +2,7 @@ import Head from "next/head";
 import Footer from "../components/Footer.component";
 import { FrostLogo } from "../components/FrostLogo.component";
 import Tour from "./tour";
+import { NewsletterModal } from "../components/NewsletterModal";
 
 export default function Home() {
   return (
@@ -24,6 +25,7 @@ export default function Home() {
       <div className="my-32">
         <Tour showLogo={false} />
       </div>
+      <NewsletterModal />
     </div>
   );
 }
