@@ -20,6 +20,11 @@ const links = [
     displayTitle: "MUSIC",
   },
   {
+    link: "https://digital.umusic.com/frostchildren-signup",
+    key: "Newsletter",
+    displayTitle: "nEwsleTTer",
+  },
+  {
     link: "https://discord.gg/qZn6BqJXej",
     key: "Discord",
     displayTitle: "DISCORD",
