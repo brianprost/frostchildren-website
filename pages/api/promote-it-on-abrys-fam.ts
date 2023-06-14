@@ -10,12 +10,12 @@ export default function handler(req: any, res: any) {
   const signature = req.headers['x-signature-ed25519'];
   const timestamp = req.headers['x-signature-timestamp'];
   const json = JSON.stringify(req.body);
-  // const isVerified = verifyKey(json, signature, timestamp, process.env.DISCORD_PUBLIC_KEY!);
+  const isVerified = verifyKey(json, signature, timestamp, process.env.DISCORD_PUBLIC_KEY!);
 
-  // if (!isVerified) {
-  //   res.status(401).send('Invalid request signature');
-  //   return;
-  // }
+  if (!isVerified) {
+    res.status(401).send('Invalid request signature');
+    return;
+  }
 
   switch (req.body.type) {
     case 1: // Ping event
