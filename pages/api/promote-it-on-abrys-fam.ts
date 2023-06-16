@@ -32,6 +32,7 @@ export default async function handler(req: any, res: any) {
       //   await interaction.reply('pong');
       // }
       console.log(req);
+      res.status(200).json({ type: 4, data: { content: "Congrats on sending your command!" } })
       // const { didPromote, response } = await promoteItOnAbrys(attachmentUrl, discordUser);
       // res.status(200).json({
       //   type: 4, data: {
