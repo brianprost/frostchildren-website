@@ -24,13 +24,21 @@ export default async function handler(req: any, res: any) {
       res.status(200).json({ type: 1 });
       break;
     default:
-      const { didPromote, response } = await promoteItOnAbrys(attachmentUrl, discordUser);
-      res.status(200).json({
-        type: 4, data: {
-          didPromote,
-          response,
-        }
-      });
+      // if (!interaction.isCommand()) return;
+
+      // const { commandName } = interaction;
+
+      // if (commandName === 'ping') {
+      //   await interaction.reply('pong');
+      // }
+      console.log(req);
+      // const { didPromote, response } = await promoteItOnAbrys(attachmentUrl, discordUser);
+      // res.status(200).json({
+      //   type: 4, data: {
+      //     didPromote,
+      //     response,
+      //   }
+      // });
       // const postHash = `${messageDate}_${messageAuthor}_${getImageFileName(
       //   attachment?.url ?? ""
       // )}`;
