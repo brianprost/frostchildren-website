@@ -35,8 +35,6 @@ const pool = new Pool({
   connectionString: dbConnectionString,
 });
 
-console.log("dbConnStr: ", dbConnectionString);
-
 type Promotion = InferModel<typeof promotions>;
 const promotions = pgTable("promotions", {
   messageId: text("message_id").primaryKey(),
@@ -123,13 +121,12 @@ async function getApprovedSubmissions() {
     channelId!
   ) as TextChannel;
   let submissions: Submission[] = [];
-  channel &&
-    submissionsFromDb.forEach(async (s) => {
+  if (channel) {
+    for (const s of submissionsFromDb) {
       const discordMessage = await channel.messages.fetch(s.messageId);
       const reactions = discordMessage.reactions.cache;
       if (!reactions) {
-        console.log("no reactions on ", s.messageId);
-        return;
+        continue;
       }
       const reactionUsers = await reactions.first()?.users.fetch();
       const hasApprovedReactors = approvedReactors.some((approvedReactor) => {
@@ -138,17 +135,23 @@ async function getApprovedSubmissions() {
         });
       });
 
-    //   if (hasApprovedReactors) {
-    //     console.log(
-    //       "going to promote",
-    //       s.messageId,
-    //       "on abrys fam. because this is the list of approved reactors: ",
-    //       reactionUsers?.map((user) => user.username)
-    //     );
-    //   } else {
-    //     console.log("no approved users reacted to ", s.messageId);
-    //   }
-    });
+      if (hasApprovedReactors) {
+        console.log(
+          "going to promote",
+          s.messageId,
+          "on abrys fam. because this is the list of approved reactors: ",
+          reactionUsers?.map((user) => user.username)
+        );
+        submissions.push({
+          messageId: s.messageId,
+          discordUser: s.discordUser!,
+          imageUrl: s.imageUrl!,
+        });
+      } else {
+        console.log("no approved users reacted to ", s.messageId);
+      }
+    }
+  }
   return submissions;
 }
 
@@ -215,26 +218,30 @@ export default async function handler(
   try {
     const responseBody: TResponseBody = {};
     client.once("ready", async () => {
-      const promises = [];
       await getNewSubmissions();
       const approvedSubmissions = await getApprovedSubmissions();
-      for (const submission of approvedSubmissions) {
-        const { discordUser, imageUrl } = submission;
+      approvedSubmissions.forEach(async (submission) => {
+        console.log();
+        console.log("promoting ", submission.messageId);
+        const { messageId, discordUser, imageUrl } = submission;
         const caption = `${discordUser} promoted it on @abrys_fam.`;
-        const res = await postToInstagram(caption, imageUrl);
-        if (res.didPromote) {
-          console.log("promoted ", submission.messageId);
-          promises.push(
-            db
-              .update(promotions)
-              .set({ igPostCode: res.igPostCode })
-              .where(eq(promotions.messageId, submission.messageId))
-          );
+        const { didPromote, response, igPostCode } = await postToInstagram(
+          caption,
+          imageUrl
+        );
+        console.log("did it promote?", didPromote, response, igPostCode);
+        if (didPromote) {
+          await db
+            .update(promotions)
+            .set({ igPostCode: igPostCode })
+            .where(eq(promotions.messageId, messageId));
+          console.log(`Updated ${messageId} with igPostCode ${igPostCode}`);
+        } else {
+          console.log(`Failed to promote ${messageId}`);
         }
-      }
-      await Promise.all(promises);
-      res.status(200).json(responseBody);
+      });
     });
+    res.status(200).json(responseBody);
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: err });
