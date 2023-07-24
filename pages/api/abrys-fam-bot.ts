@@ -1,6 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { Client, GatewayIntentBits, TextChannel } from "discord.js";
+import {
+  Client,
+  GatewayIntentBits,
+  MessageReaction,
+  TextChannel,
+} from "discord.js";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { pgTable, serial, text, timestamp, boolean } from "drizzle-orm/pg-core";
 import { InferModel, isNull, eq, isNotNull, and } from "drizzle-orm";
@@ -122,87 +127,114 @@ async function getApprovedSubmissions() {
     submissionsFromDb.forEach(async (s) => {
       const discordMessage = await channel.messages.fetch(s.messageId);
       const reactions = discordMessage.reactions.cache;
-      //   const haveApprovedReactors = reactions.some((reaction) => {
-      //     const reactors = reaction.users.cache.map((user) => user.username);
-      //     return reactors.some((reactor) => approvedReactors.includes(reactor));
-      //   });
-      //   if (haveApprovedReactors) {
-      const reactors = await Promise.all(
-        discordMessage.reactions.cache.map(async (reaction) => {
-          const reactorsTmp = await reaction.users.fetch();
-          return reactorsTmp.map((user) => user.username);
-        })
-      );
-      const hasApprovedReactors = reactors.map((reactor) => {
-        return reactor.filter((reactor) => approvedReactors.includes(reactor));
-      });
-      if (hasApprovedReactors.length > 0) {
-        // promoteItOnAbrysFam(s);
-        // promoteItOnAbrysFam([s]);
-        console.log("going to promote ", s.messageId, " on abrys fam. because this is the list of approved reactors: ", hasApprovedReactors);
-      } else {
-        console.log("no approved users reacted to ", s.messageId);
+      if (!reactions) {
+        console.log("no reactions on ", s.messageId);
+        return;
       }
+      const reactionUsers = await reactions.first()?.users.fetch();
+      const hasApprovedReactors = approvedReactors.some((approvedReactor) => {
+        return reactionUsers?.some((user) => {
+          return user.username === approvedReactor;
+        });
+      });
+
+    //   if (hasApprovedReactors) {
+    //     console.log(
+    //       "going to promote",
+    //       s.messageId,
+    //       "on abrys fam. because this is the list of approved reactors: ",
+    //       reactionUsers?.map((user) => user.username)
+    //     );
+    //   } else {
+    //     console.log("no approved users reacted to ", s.messageId);
+    //   }
     });
   return submissions;
 }
 
-async function promoteItOnAbrysFam(submissions: Submission[]) {
-  // newSubmissions.map(async (message) => {
-  //   const { id } = message;
-  //   try {
-  //     const actualMessage = await channel.messages.fetch(id);
-  //     const userWhoPosted = actualMessage.author.username;
-  //     const attachmentUrl = actualMessage.attachments.first()?.url;
-  //     const reactors = await Promise.all(
-  //       actualMessage.reactions.cache.map(async (reaction) => {
-  //         const reactorsTmp = await reaction.users.fetch();
-  //         return reactorsTmp.map((user) => user.username);
-  //       })
-  //     );
-  //     const approvedReactors = reactors.map((reactor) => {
-  //       return reactor.filter((reactor) => APPROVED_USERS.includes(reactor));
-  //     });
-  //     if (reactors.length > 0 && approvedReactors.length > 0) {
-  //       const messageId = actualMessage.id;
-  //       // const newDbRecord = {
-  //       // 	discordUser: userWhoPosted,
-  //       // 	messageId: messageId,
-  //       // 	imageUrl: attachmentUrl,
-  //       // 	igPostCode: "lol just a test",
-  //       // };
-  //       // await db.insert(promotions).values(newDbRecord).returning();
-  //       // promoteItOnAbrys(attachmentUrl!, userWhoPosted, messageId);
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // });
-  // const nonPromotedPromotions = await db
-  //   .select()
-  //   .from(promotions)
-  //   .where(isNull(promotions.igPostCode));
-  // console.log(nonPromotedPromotions.length, " submissions not approved yet.");
-  // // update the most_recent_message_id in the db
-  // await db
-  // 	.update(configTable)
-  // 	.set({ value: channel.lastMessageId })
-  // 	.where(eq(configTable.key, "most_recent_message_id"));
-  // console.log(`Updated last message id to ${channel.lastMessageId}`);
-}
+// async function promoteItOnAbrysFam(submissions: Submission[]) {
+// newSubmissions.map(async (message) => {
+//   const { id } = message;
+//   try {
+//     const actualMessage = await channel.messages.fetch(id);
+//     const userWhoPosted = actualMessage.author.username;
+//     const attachmentUrl = actualMessage.attachments.first()?.url;
+//     const reactors = await Promise.all(
+//       actualMessage.reactions.cache.map(async (reaction) => {
+//         const reactorsTmp = await reaction.users.fetch();
+//         return reactorsTmp.map((user) => user.username);
+//       })
+//     );
+//     const approvedReactors = reactors.map((reactor) => {
+//       return reactor.filter((reactor) => APPROVED_USERS.includes(reactor));
+//     });
+//     if (reactors.length > 0 && approvedReactors.length > 0) {
+//       const messageId = actualMessage.id;
+//       // const newDbRecord = {
+//       // 	discordUser: userWhoPosted,
+//       // 	messageId: messageId,
+//       // 	imageUrl: attachmentUrl,
+//       // 	igPostCode: "lol just a test",
+//       // };
+//       // await db.insert(promotions).values(newDbRecord).returning();
+//       // promoteItOnAbrys(attachmentUrl!, userWhoPosted, messageId);
+//     }
+//   } catch (err) {
+//     console.log(err);
+//   }
+// });
+// const nonPromotedPromotions = await db
+//   .select()
+//   .from(promotions)
+//   .where(isNull(promotions.igPostCode));
+// console.log(nonPromotedPromotions.length, " submissions not approved yet.");
+// // update the most_recent_message_id in the db
+// await db
+// 	.update(configTable)
+// 	.set({ value: channel.lastMessageId })
+// 	.where(eq(configTable.key, "most_recent_message_id"));
+// console.log(`Updated last message id to ${channel.lastMessageId}`);
+// }
 
-async function postToInstagram() {}
+async function postToInstagram(
+  caption: string,
+  imageUrl: string
+): Promise<{ didPromote: boolean; response: string; igPostCode?: string }> {
+  // for testing
+  return {
+    didPromote: true,
+    response: "Promoted to https://www.instagram.com/p/CKZ3Z9YBZ3Y/",
+    igPostCode: "CKZ3Z9YBZ3Y",
+  };
+}
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   try {
+    const responseBody: TResponseBody = {};
     client.once("ready", async () => {
+      const promises = [];
       await getNewSubmissions();
       const approvedSubmissions = await getApprovedSubmissions();
+      for (const submission of approvedSubmissions) {
+        const { discordUser, imageUrl } = submission;
+        const caption = `${discordUser} promoted it on @abrys_fam.`;
+        const res = await postToInstagram(caption, imageUrl);
+        if (res.didPromote) {
+          console.log("promoted ", submission.messageId);
+          promises.push(
+            db
+              .update(promotions)
+              .set({ igPostCode: res.igPostCode })
+              .where(eq(promotions.messageId, submission.messageId))
+          );
+        }
+      }
+      await Promise.all(promises);
+      res.status(200).json(responseBody);
     });
-    res.status(200).json({});
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: err });
