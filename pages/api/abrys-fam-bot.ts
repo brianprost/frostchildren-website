@@ -220,22 +220,26 @@ export default async function handler(
     client.once("ready", async () => {
       await getNewSubmissions();
       const approvedSubmissions = await getApprovedSubmissions();
+      if (approvedSubmissions.length < 1) {
+        console.log("No submissions to promote.");
+        return;
+      }
       approvedSubmissions.forEach(async (submission) => {
-        console.log();
-        console.log("promoting ", submission.messageId);
         const { messageId, discordUser, imageUrl } = submission;
         const caption = `${discordUser} promoted it on @abrys_fam.`;
         const { didPromote, response, igPostCode } = await postToInstagram(
           caption,
           imageUrl
         );
-        console.log("did it promote?", didPromote, response, igPostCode);
+        console.log("from Instagram: ", response);
         if (didPromote) {
           await db
             .update(promotions)
             .set({ igPostCode: igPostCode })
             .where(eq(promotions.messageId, messageId));
-          console.log(`Updated ${messageId} with igPostCode ${igPostCode}`);
+          console.log(
+            `Updated DB record for ${messageId} with igPostCode ${igPostCode}`
+          );
         } else {
           console.log(`Failed to promote ${messageId}`);
         }
