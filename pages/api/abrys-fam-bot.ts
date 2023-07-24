@@ -7,13 +7,18 @@ import { InferModel, isNull, eq, isNotNull, and } from "drizzle-orm";
 import pg from "pg";
 
 type TResponseBody = {
-  newMessagesForPossiblePromotion?: number;
+  newSubmissions?: number;
   nonPromotedPromotions?: number;
 };
 
-export async function getChannelState(): Promise<TResponseBody> {
-  let responseBody: TResponseBody;
+type Submission = {
+  messageId: string;
+  discordUser: string;
+  imageUrl: string;
+  reactionUsers: string[];
+};
 
+export async function getChannelState(): Promise<Submission[]> {
   const APPROVED_USERS = [
     "angular emoji",
     "angularemoji",
@@ -47,20 +52,7 @@ export async function getChannelState(): Promise<TResponseBody> {
     igPostCode: text("ig_post_code"),
   });
 
-  type Config = InferModel<typeof configTable>;
-  const configTable = pgTable("config", {
-    id: serial("id").primaryKey(),
-    key: text("key"),
-    value: text("value"),
-  });
-
   const db = drizzle(pool);
-
-  //   const knownLastMsgIdFromDb = await db
-  //     .select()
-  //     .from(configTable)
-  //     .where(eq(configTable.key, "most_recent_message_id"));
-  //   const knownLastMsgId = knownLastMsgIdFromDb[0].value;
 
   const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent],
@@ -71,47 +63,36 @@ export async function getChannelState(): Promise<TResponseBody> {
   const channelId = process.env.DISCORD_CHANNEL_ID;
 
   client.once("ready", async () => {
-    console.log("🧽 I'm ready!");
-    console.log("👀 Checking for messages");
+    console.log(
+      `👀 Checking for messages from ${process.env.DISCORD_CHANNEL_NAME}`
+    );
 
     const channel: TextChannel = client.channels.cache.get(
       channelId!
     ) as TextChannel;
 
-    const previouslyPromoted = (
-      await db
-        .select()
-        .from(promotions)
-        .where(
-          and(isNotNull(promotions.igPostCode), isNotNull(promotions.messageId))
-        )
-    ).map((p) => p.messageId);
-
-    console.log(previouslyPromoted.length, " messages have been promoted.");
-
     const allChannelMessages = await channel!.messages.fetch({ limit: 100 });
-    console.log(allChannelMessages.size, " messages in the channel.");
-    const newMessagesForPossiblePromotion = allChannelMessages.filter(
-      (message) => {
-        // console.log(
-        //   `message.id: ${message.id} has ${
-        //     previouslyPromoted.includes(message.id)
-        //       ? "been promoted"
-        //       : "not been promoted"
-        //   }`
-        // );
-        return (
-          message.attachments.size > 0 &&
-          message.reactions.cache.size > 0 &&
-          !previouslyPromoted.includes(message.id)
-        );
-      }
+    const submissionMessages = allChannelMessages.filter((message) => {
+      return message.attachments.size > 0 && message.reactions.cache.size > 0;
+    });
+    console.log(submissionMessages.size, " messages are submissions.");
+
+    const dbRecords = (await db.select().from(promotions)).map(
+      (p) => p.messageId
     );
-    console.log(newMessagesForPossiblePromotion.size, " messages are new.");
+
+    const newSubmissions = allChannelMessages.filter((message) => {
+      return (
+        message.attachments.size > 0 &&
+        message.reactions.cache.size > 0 &&
+        !dbRecords.includes(message.id)
+      );
+    });
+    console.log(newSubmissions.size, " messages are new.");
 
     // update db to include new messages
     await Promise.all(
-      newMessagesForPossiblePromotion.map(async (message) => {
+      newSubmissions.map(async (message) => {
         // const { id } = message;
         const promotion: Promotion = {
           messageId: message.id,
@@ -119,56 +100,45 @@ export async function getChannelState(): Promise<TResponseBody> {
           imageUrl: message.attachments.first()!.url,
           igPostCode: null,
         };
-        // const newDbRecord = {
-        //   discordUser: userWhoPosted,
-        //   messageId: messageId,
-        //   imageUrl: attachmentUrl,
-        //   igPostCode: null,
-        // };
-        // await db.insert(promotions).values(newDbRecord).returning();
+        await db.insert(promotions).values(promotion).returning();
       })
     );
 
-    console.log(
-      newMessagesForPossiblePromotion.size,
-      " new submission(s) to promote."
-    );
-
-    newMessagesForPossiblePromotion.map(async (message) => {
-      const { id } = message;
-      try {
-        const actualMessage = await channel.messages.fetch(id);
-        const userWhoPosted = actualMessage.author.username;
-        const attachmentUrl = actualMessage.attachments.first()?.url;
-        const reactors = await Promise.all(
-          actualMessage.reactions.cache.map(async (reaction) => {
-            const reactorsTmp = await reaction.users.fetch();
-            return reactorsTmp.map((user) => user.username);
-          })
-        );
-        const approvedReactors = reactors.map((reactor) => {
-          return reactor.filter((reactor) => APPROVED_USERS.includes(reactor));
-        });
-        if (reactors.length > 0 && approvedReactors.length > 0) {
-          const messageId = actualMessage.id;
-          // const newDbRecord = {
-          // 	discordUser: userWhoPosted,
-          // 	messageId: messageId,
-          // 	imageUrl: attachmentUrl,
-          // 	igPostCode: "lol just a test",
-          // };
-          // await db.insert(promotions).values(newDbRecord).returning();
-          // promoteItOnAbrys(attachmentUrl!, userWhoPosted, messageId);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    });
-    const nonPromotedPromotions = await db
-      .select()
-      .from(promotions)
-      .where(isNull(promotions.igPostCode));
-    console.log(nonPromotedPromotions.length, " submissions not approved yet.");
+    // newSubmissions.map(async (message) => {
+    //   const { id } = message;
+    //   try {
+    //     const actualMessage = await channel.messages.fetch(id);
+    //     const userWhoPosted = actualMessage.author.username;
+    //     const attachmentUrl = actualMessage.attachments.first()?.url;
+    //     const reactors = await Promise.all(
+    //       actualMessage.reactions.cache.map(async (reaction) => {
+    //         const reactorsTmp = await reaction.users.fetch();
+    //         return reactorsTmp.map((user) => user.username);
+    //       })
+    //     );
+    //     const approvedReactors = reactors.map((reactor) => {
+    //       return reactor.filter((reactor) => APPROVED_USERS.includes(reactor));
+    //     });
+    //     if (reactors.length > 0 && approvedReactors.length > 0) {
+    //       const messageId = actualMessage.id;
+    //       // const newDbRecord = {
+    //       // 	discordUser: userWhoPosted,
+    //       // 	messageId: messageId,
+    //       // 	imageUrl: attachmentUrl,
+    //       // 	igPostCode: "lol just a test",
+    //       // };
+    //       // await db.insert(promotions).values(newDbRecord).returning();
+    //       // promoteItOnAbrys(attachmentUrl!, userWhoPosted, messageId);
+    //     }
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // });
+    // const nonPromotedPromotions = await db
+    //   .select()
+    //   .from(promotions)
+    //   .where(isNull(promotions.igPostCode));
+    // console.log(nonPromotedPromotions.length, " submissions not approved yet.");
 
     // // update the most_recent_message_id in the db
     // await db
@@ -177,8 +147,13 @@ export async function getChannelState(): Promise<TResponseBody> {
     // 	.where(eq(configTable.key, "most_recent_message_id"));
     // console.log(`Updated last message id to ${channel.lastMessageId}`);
   });
-  return responseBody!;
 }
+
+async function getNewChannelState() {}
+
+async function promoteItOnAbrysFam(promotion: Promotion) {}
+
+async function postToInstagram() {}
 
 export default async function handler(
   req: NextApiRequest,
