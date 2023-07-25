@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import {
   Client,
+  Collection,
   GatewayIntentBits,
   MessageReaction,
   TextChannel,
@@ -47,6 +48,40 @@ const client = new Client({
 client.login(process.env.DISCORD_TOKEN);
 const channelId = process.env.DISCORD_CHANNEL_ID;
 
+async function fetchMore(channel: TextChannel, limit: number) {
+  if (!channel) {
+    throw new Error(`Expected channel, got ${typeof channel}.`);
+  }
+  if (limit <= 100) {
+    return channel.messages.fetch({ limit });
+  }
+
+  let collection = new Collection();
+  let lastId = null;
+  let options: { limit: number; before?: string } = { limit: 100 };
+  let remaining = limit;
+
+  while (remaining > 0) {
+    options.limit = remaining > 100 ? 100 : remaining;
+    remaining = remaining > 100 ? remaining - 100 : 0;
+
+    if (lastId) {
+      options.before = lastId;
+    }
+
+    let messages = await channel.messages.fetch(options);
+
+    if (!messages.last()) {
+      break;
+    }
+
+    collection = collection.concat(messages);
+    lastId = messages.last()!.id;
+  }
+
+  return collection;
+}
+
 export async function getNewSubmissions() {
   console.log(
     `👀 Checking for messages from ${process.env.DISCORD_CHANNEL_NAME}`
@@ -55,16 +90,16 @@ export async function getNewSubmissions() {
   const channel: TextChannel = client.channels.cache.get(
     channelId!
   ) as TextChannel;
-  const allChannelMessages = await channel!.messages.fetch({ limit: 100 });
+  const allChannelMessages = await fetchMore(channel, 1000);
 
-  const submissionMessages = allChannelMessages.filter((message) => {
+  const submissionMessages = allChannelMessages.filter((message: any) => {
     return message.attachments.size > 0 && message.reactions.cache.size > 0;
   });
   console.log(submissionMessages.size, " messages are submissions.");
   /**
    * a list of messages that I, @abrys_fam_bot, have already responded to.
    */
-  const iPromotedPreviously = submissionMessages.filter((message) => {
+  const iPromotedPreviously = submissionMessages.filter((message: any) => {
     if (message.reference === null) {
       return false;
     }
@@ -85,7 +120,7 @@ export async function getNewSubmissions() {
     (p) => p.messageId
   );
 
-  const newSubmissions = allChannelMessages.filter((message) => {
+  const newSubmissions = allChannelMessages.filter((message: any) => {
     return (
       message.attachments.size > 0 &&
       message.reactions.cache.size > 0 &&
@@ -96,7 +131,7 @@ export async function getNewSubmissions() {
   console.log(newSubmissions.size, " messages are new.");
 
   // update db to include new messages
-  const promises = newSubmissions.map(async (message) => {
+  const promises = newSubmissions.map(async (message: any) => {
     const promotion: Promotion = {
       messageId: message.id,
       discordUser: message.author.username,
