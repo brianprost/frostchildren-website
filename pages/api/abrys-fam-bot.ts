@@ -11,11 +11,6 @@ import { pgTable, serial, text, timestamp, boolean } from "drizzle-orm/pg-core";
 import { InferModel, isNull, eq, isNotNull, and } from "drizzle-orm";
 import pg from "pg";
 
-type TResponseBody = {
-  newSubmissions?: number;
-  nonPromotedPromotions?: number;
-};
-
 type Submission = {
   messageId: string;
   discordUser: string;
@@ -216,36 +211,47 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    const responseBody: TResponseBody = {};
-    client.once("ready", async () => {
-      await getNewSubmissions();
-      const approvedSubmissions = await getApprovedSubmissions();
-      if (approvedSubmissions.length < 1) {
-        console.log("No submissions to promote.");
-        return;
-      }
-      approvedSubmissions.forEach(async (submission) => {
-        const { messageId, discordUser, imageUrl } = submission;
-        const caption = `${discordUser} promoted it on @abrys_fam.`;
-        const { didPromote, response, igPostCode } = await postToInstagram(
-          caption,
-          imageUrl
-        );
-        console.log("from Instagram: ", response);
-        if (didPromote) {
-          await db
-            .update(promotions)
-            .set({ igPostCode: igPostCode })
-            .where(eq(promotions.messageId, messageId));
-          console.log(
-            `Updated DB record for ${messageId} with igPostCode ${igPostCode}`
-          );
-        } else {
-          console.log(`Failed to promote ${messageId}`);
+    const apiResponse = {};
+    await new Promise<void>((resolve, reject) => {
+      client.once("ready", async () => {
+        try {
+          await getNewSubmissions();
+          const approvedSubmissions = await getApprovedSubmissions();
+          if (approvedSubmissions.length < 1) {
+            console.log("No submissions to promote.");
+            resolve();
+            return;
+          }
+
+          const promises = approvedSubmissions.map(async (submission) => {
+            const { messageId, discordUser, imageUrl } = submission;
+            const caption = `${discordUser} promoted it on @abrys_fam.`;
+            const { didPromote, response, igPostCode } = await postToInstagram(
+              caption,
+              imageUrl
+            );
+            console.log("from Instagram: ", response);
+            if (didPromote) {
+              await db
+                .update(promotions)
+                .set({ igPostCode: igPostCode })
+                .where(eq(promotions.messageId, messageId));
+              console.log(
+                `Updated DB record for ${messageId} with igPostCode ${igPostCode}`
+              );
+            } else {
+              console.log(`Failed to promote ${messageId}`);
+            }
+          });
+
+          await Promise.all(promises);
+          resolve();
+        } catch (err) {
+          reject(err);
         }
       });
     });
-    res.status(200).json(responseBody);
+    res.status(200).json("hey look, nothing went wrong.");
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: err });
