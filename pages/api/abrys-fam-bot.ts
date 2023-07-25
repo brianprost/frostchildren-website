@@ -56,10 +56,30 @@ export async function getNewSubmissions() {
     channelId!
   ) as TextChannel;
   const allChannelMessages = await channel!.messages.fetch({ limit: 100 });
+
   const submissionMessages = allChannelMessages.filter((message) => {
     return message.attachments.size > 0 && message.reactions.cache.size > 0;
   });
   console.log(submissionMessages.size, " messages are submissions.");
+  /**
+   * a list of messages that I, @abrys_fam_bot, have already responded to.
+   */
+  const iPromotedPreviously = submissionMessages.filter((message) => {
+    if (message.reference === null) {
+      return false;
+    }
+    const repliedToMessageId = message.reference.messageId;
+    const textSignalingAPromotion = "Promoted to https://www.instagram.com/p/";
+    if (message.content.includes(textSignalingAPromotion)) {
+      return true;
+    }
+    // console.log(message.content);
+    // return repliedToMessageId;
+  });
+  console.log(
+    iPromotedPreviously.size,
+    " messages are ones I've promoted previously."
+  );
 
   const dbRecords = (await db.select().from(promotions)).map(
     (p) => p.messageId
@@ -69,7 +89,8 @@ export async function getNewSubmissions() {
     return (
       message.attachments.size > 0 &&
       message.reactions.cache.size > 0 &&
-      !dbRecords.includes(message.id)
+      !dbRecords.includes(message.id) &&
+      !iPromotedPreviously.has(message.id)
     );
   });
   console.log(newSubmissions.size, " messages are new.");
@@ -211,7 +232,6 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    const apiResponse = {};
     await new Promise<void>((resolve, reject) => {
       client.once("ready", async () => {
         try {
@@ -223,6 +243,10 @@ export default async function handler(
             return;
           }
 
+          const channel: TextChannel = client.channels.cache.get(
+            channelId!
+          ) as TextChannel;
+
           const promises = approvedSubmissions.map(async (submission) => {
             const { messageId, discordUser, imageUrl } = submission;
             const caption = `${discordUser} promoted it on @abrys_fam.`;
@@ -231,6 +255,7 @@ export default async function handler(
               imageUrl
             );
             console.log("from Instagram: ", response);
+            const message = await channel.messages.fetch(messageId);
             if (didPromote) {
               await db
                 .update(promotions)
@@ -239,11 +264,17 @@ export default async function handler(
               console.log(
                 `Updated DB record for ${messageId} with igPostCode ${igPostCode}`
               );
+              // await message.reply(
+              //   `TSWIFT JUST Promoted to https://www.instagram.com/p/${igPostCode}/`
+              // );
+              console.log(`Replied to @${discordUser}'s ${messageId}`);
             } else {
               console.log(`Failed to promote ${messageId}`);
+              // await message.reply(
+              //   `Failed to promote. Instagram said: ${response}`
+              // );
             }
           });
-
           await Promise.all(promises);
           resolve();
         } catch (err) {
