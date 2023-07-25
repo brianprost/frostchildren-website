@@ -290,7 +290,6 @@ export default async function handler(
               imageUrl
             );
             console.log("from Instagram: ", response);
-            const message = await channel.messages.fetch(messageId);
             if (didPromote) {
               await db
                 .update(promotions)
