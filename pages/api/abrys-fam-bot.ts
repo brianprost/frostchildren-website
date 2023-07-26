@@ -311,13 +311,14 @@ export default async function handler(
           await Promise.all(promises);
           console.log("bye!");
           resBody.push("bye!");
+          res.status(200).json(JSON.stringify(resBody));
         } catch (err) {
           client.destroy();
           console.log("bye!");
           resBody.push("bye!");
+          res.status(500).json({ error: err });
         }
       });
-      res.status(200).json(JSON.stringify(resBody));
     });
   } catch (err) {
     console.log(err);
