@@ -41,11 +41,6 @@ const promotions = pgTable("promotions_dev", {
 
 const db = drizzle(pool);
 
-const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent],
-});
-
-client.login(process.env.DISCORD_TOKEN);
 const channelId = process.env.DISCORD_CHANNEL_ID;
 
 async function fetchMore(channel: TextChannel, limit: number) {
@@ -82,7 +77,7 @@ async function fetchMore(channel: TextChannel, limit: number) {
   return collection;
 }
 
-export async function getNewSubmissions() {
+export async function getNewSubmissions(client: Client) {
   console.log(
     `👀 Checking for messages from ${process.env.DISCORD_CHANNEL_NAME}`
   );
@@ -152,7 +147,7 @@ export async function getNewSubmissions() {
 /**
  * Retrieves all submissions that are not promotions.
  */
-async function getApprovedSubmissions() {
+async function getApprovedSubmissions(client: Client) {
   console.log("Checking for approved submissions.");
   const approvedReactors = [
     "angular emoji",
@@ -266,18 +261,20 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  let resBody: any[] = [];
+  const client = new Client({
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent],
+  });
+  let resBody: string[] = [];
   try {
     await new Promise<void>((resolve, reject) => {
+      client.login(process.env.DISCORD_TOKEN);
       client.once("ready", async () => {
         try {
-          await getNewSubmissions();
-          const approvedSubmissions = await getApprovedSubmissions();
+          await getNewSubmissions(client);
+          const approvedSubmissions = await getApprovedSubmissions(client);
           if (approvedSubmissions.length < 1) {
             console.log("No submissions to promote.");
             resBody.push("No submissions to promote.");
-            client.destroy(); // destroy the client when done
-            resolve();
             return;
           }
 
@@ -309,22 +306,22 @@ export default async function handler(
               console.log(`Failed to promote ${messageId}`);
               resBody.push(`Failed to promote ${messageId}`);
             }
-            resolve();
           });
+          client.destroy();
           await Promise.all(promises);
-          client.destroy(); // destroy the client when done
-          resolve();
+          console.log("bye!");
+          resBody.push("bye!");
         } catch (err) {
-          client.destroy(); // destroy the client if error occurs
-          reject(err);
+          client.destroy();
+          console.log("bye!");
+          resBody.push("bye!");
         }
       });
+      res.status(200).json(JSON.stringify(resBody));
     });
-    res.status(200).json(resBody);
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: err });
   }
   client.destroy();
 }
-
