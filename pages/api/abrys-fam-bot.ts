@@ -11,6 +11,8 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { pgTable, serial, text, timestamp, boolean } from "drizzle-orm/pg-core";
 import { InferModel, isNull, eq, isNotNull, and } from "drizzle-orm";
 import pg from "pg";
+import sharp from "sharp";
+import { IgApiClient } from "instagram-private-api";
 
 type Submission = {
   messageId: string;
@@ -32,7 +34,7 @@ const pool = new Pool({
 });
 
 type Promotion = InferModel<typeof promotions>;
-const promotions = pgTable("promotions_dev", {
+const promotions = pgTable("promotions", {
   messageId: text("message_id").primaryKey(),
   discordUser: text("discord_user"),
   imageUrl: text("image_url"),
@@ -245,16 +247,56 @@ async function getApprovedSubmissions(client: Client) {
 // console.log(`Updated last message id to ${channel.lastMessageId}`);
 // }
 
+// async function postToInstagram(
+//   caption: string,
+//   imageUrl: ArrayBuffer,
+//   ig: IgApiClient
+// ): Promise<{ didPromote: boolean; response: string; igPostCode?: string }> {
+//   // for testing
+//   return {
+//     didPromote: true,
+//     response: "Promoted to https://www.instagram.com/p/CKZ3Z9YBZ3Y/",
+//     igPostCode: "CKZ3Z9YBZ3Y",
+//   };
+// }
+
 async function postToInstagram(
   caption: string,
-  imageUrl: string
+  image: ArrayBuffer,
+  ig: IgApiClient
 ): Promise<{ didPromote: boolean; response: string; igPostCode?: string }> {
-  // for testing
-  return {
-    didPromote: true,
-    response: "Promoted to https://www.instagram.com/p/CKZ3Z9YBZ3Y/",
-    igPostCode: "CKZ3Z9YBZ3Y",
+  console.log("Promoting to Instagram...");
+  const metadata = await sharp(image).metadata();
+  if (metadata.width! < 320 || metadata.height! < 320) {
+    console.log(`Image is too small`);
+    return { didPromote: false, response: "Image is too small" };
+  }
+
+  const photoBuffer = await sharp(image)
+    .resize({ width: 1080, withoutEnlargement: true })
+    .jpeg({ quality: 100 })
+    .toBuffer();
+  const photo = {
+    file: photoBuffer,
+    caption: caption,
   };
+
+  try {
+    const res = await ig.publish.photo(photo);
+    const igPostCode = res.media.code;
+    console.log(`Promoted to Instagram: ${igPostCode}`);
+    return {
+      didPromote: true,
+      response:
+        res.status === "ok"
+          ? `Promoted to https://www.instagram.com/p/${igPostCode}/`
+          : "Weird-ass error. You should never be reading this message. Tell @SleepRides to look at the logs",
+      igPostCode: igPostCode,
+    };
+  } catch (e) {
+    console.log(e);
+    return { didPromote: false, response: e };
+  }
 }
 
 export default async function handler(
@@ -283,12 +325,24 @@ export default async function handler(
             channelId!
           ) as TextChannel;
 
+          const igClient = new IgApiClient();
+          igClient.state.generateDevice(process.env.IG_USERNAME!);
+          await igClient.account.login(
+            process.env.IG_USERNAME!,
+            process.env.IG_PASSWORD!
+          );
+
           const promises = approvedSubmissions.map(async (submission) => {
             const { messageId, discordUser, imageUrl } = submission;
+
+            const imageResponse = await fetch(imageUrl);
+            let imageBuffer = await imageResponse.arrayBuffer();
+
             const caption = `${discordUser} promoted it on @abrys_fam.`;
             const { didPromote, response, igPostCode } = await postToInstagram(
               caption,
-              imageUrl
+              imageBuffer,
+              igClient
             );
             console.log("from Instagram: ", response);
             resBody.push("from Instagram: ", response);
