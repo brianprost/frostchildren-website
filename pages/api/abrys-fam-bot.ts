@@ -275,6 +275,7 @@ export default async function handler(
           if (approvedSubmissions.length < 1) {
             console.log("No submissions to promote.");
             resBody.push("No submissions to promote.");
+            res.status(200).json(JSON.stringify(resBody, null, 2));
             return;
           }
 
