@@ -32,7 +32,7 @@ const pool = new Pool({
 });
 
 type Promotion = InferModel<typeof promotions>;
-const promotions = pgTable("promotions", {
+const promotions = pgTable("promotions_dev", {
   messageId: text("message_id").primaryKey(),
   discordUser: text("discord_user"),
   imageUrl: text("image_url"),
@@ -90,7 +90,7 @@ export async function getNewSubmissions() {
   const channel: TextChannel = client.channels.cache.get(
     channelId!
   ) as TextChannel;
-  const allChannelMessages = await fetchMore(channel, 1000);
+  const allChannelMessages = await fetchMore(channel, 100);
 
   const submissionMessages = allChannelMessages.filter((message: any) => {
     return message.attachments.size > 0 && message.reactions.cache.size > 0;
@@ -266,6 +266,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  let resBody: any[] = [];
   try {
     await new Promise<void>((resolve, reject) => {
       client.once("ready", async () => {
@@ -274,6 +275,8 @@ export default async function handler(
           const approvedSubmissions = await getApprovedSubmissions();
           if (approvedSubmissions.length < 1) {
             console.log("No submissions to promote.");
+            resBody.push("No submissions to promote.");
+            client.destroy(); // destroy the client when done
             resolve();
             return;
           }
@@ -290,6 +293,7 @@ export default async function handler(
               imageUrl
             );
             console.log("from Instagram: ", response);
+            resBody.push("from Instagram: ", response);
             if (didPromote) {
               await db
                 .update(promotions)
@@ -298,27 +302,29 @@ export default async function handler(
               console.log(
                 `Updated DB record for ${messageId} with igPostCode ${igPostCode}`
               );
-              // await message.reply(
-              //   `TSWIFT JUST Promoted to https://www.instagram.com/p/${igPostCode}/`
-              // );
-              console.log(`Replied to @${discordUser}'s ${messageId}`);
+              resBody.push(
+                `Updated DB record for ${messageId} with igPostCode ${igPostCode}`
+              );
             } else {
               console.log(`Failed to promote ${messageId}`);
-              // await message.reply(
-              //   `Failed to promote. Instagram said: ${response}`
-              // );
+              resBody.push(`Failed to promote ${messageId}`);
             }
+            resolve();
           });
           await Promise.all(promises);
+          client.destroy(); // destroy the client when done
           resolve();
         } catch (err) {
+          client.destroy(); // destroy the client if error occurs
           reject(err);
         }
       });
     });
-    res.status(200).json("hey look, nothing went wrong.");
+    res.status(200).json(resBody);
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: err });
   }
+  client.destroy();
 }
+
