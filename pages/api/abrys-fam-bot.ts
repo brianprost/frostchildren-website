@@ -21,15 +21,15 @@ type Submission = {
 };
 
 const isDevMode = process.argv.includes("--dev");
-console.log(`Running in ${isDevMode ? "dev" : "prod"} mode.`)
+console.log(`Running in ${isDevMode ? "dev" : "prod"} mode.`);
 
 // POSTGRES //
 
 const { Pool } = pg;
 
 const dbConnectionString = isDevMode
-	? process.env.PG_DATABASE_CONNECTION_STRING
-	: process.env.POSTGRES_URL + "?sslmode=require";
+  ? process.env.PG_DATABASE_CONNECTION_STRING
+  : process.env.POSTGRES_URL + "?sslmode=require";
 
 const pool = new Pool({
   connectionString: dbConnectionString,
@@ -253,12 +253,16 @@ async function getApprovedSubmissions(client: Client) {
 //   caption: string,
 //   imageUrl: ArrayBuffer,
 //   ig: IgApiClient
-// ): Promise<{ didPromote: boolean; response: string; igPostCode?: string }> {
+// ): Promise<{
+//   didPromote: boolean;
+//   response: string;
+//   igPostCode?: string | null;
+// }> {
 //   // for testing
 //   return {
 //     didPromote: true,
 //     response: "Promoted to https://www.instagram.com/p/CKZ3Z9YBZ3Y/",
-//     igPostCode: "CKZ3Z9YBZ3Y",
+//     igPostCode: null,
 //   };
 // }
 
@@ -313,13 +317,14 @@ export default async function handler(
     await new Promise<void>((resolve, reject) => {
       client.login(process.env.DISCORD_TOKEN);
       client.once("ready", async () => {
+        console.log(`🤖 I'm logged in to Discord`);
         try {
           await getNewSubmissions(client);
           const approvedSubmissions = await getApprovedSubmissions(client);
           if (approvedSubmissions.length < 1) {
             console.log("No submissions to promote.");
             resBody.push("No submissions to promote.");
-            res.status(200).json(JSON.stringify(resBody, null, 2));
+            res.status(200).json(resBody);
             return;
           }
 
@@ -359,20 +364,28 @@ export default async function handler(
               resBody.push(
                 `Updated DB record for ${messageId} with igPostCode ${igPostCode}`
               );
+              // respond to message
+              const message = await channel.messages.fetch(messageId);
+              await message.reply(
+                `Promoted to https://www.instagram.com/p/${igPostCode}/`
+              );
+              console.log(`Replied to ${messageId}`);
             } else {
+              const message = await channel.messages.fetch(messageId);
+              await message.reply(`Failed to promote to Instagram.`);
               console.log(`Failed to promote ${messageId}`);
               resBody.push(`Failed to promote ${messageId}`);
             }
           });
-          client.destroy();
           await Promise.all(promises);
+          client.destroy();
           console.log("bye!");
           resBody.push("bye!");
-          res.status(200).json(JSON.stringify(resBody));
+          res.status(200).json(resBody);
         } catch (err) {
           client.destroy();
-          console.log("bye!");
-          resBody.push("bye!");
+          console.log(err);
+          resBody.push(err);
           res.status(500).json({ error: err });
         }
       });

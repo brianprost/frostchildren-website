@@ -58,7 +58,7 @@ export default async function handler(
           channelId!
         ) as TextChannel;
 
-        const messages = await fetchMore(channel, 50);
+        const messages = await fetchMore(channel, 1000);
         console.log(`There are ${messages.size} messages in the channel.`);
 
         const submissions: Submission[] = [];
