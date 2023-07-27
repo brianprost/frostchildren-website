@@ -21,13 +21,15 @@ type Submission = {
 };
 
 const isDevMode = process.argv.includes("--dev");
-console.log(`isDevMode: ${isDevMode}`);
+console.log(`Running in ${isDevMode ? "dev" : "prod"} mode.`)
 
 // POSTGRES //
 
 const { Pool } = pg;
 
-const dbConnectionString = process.env.PG_DATABASE_CONNECTION_STRING;
+const dbConnectionString = isDevMode
+	? process.env.PG_DATABASE_CONNECTION_STRING
+	: process.env.POSTGRES_URL + "?sslmode=require";
 
 const pool = new Pool({
   connectionString: dbConnectionString,
