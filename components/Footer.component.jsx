@@ -10,7 +10,7 @@ const links = [
     displayTitle: "TOUR",
   },
   {
-    link: "https://frostchildren.bandcamp.com/merch"
+    link: "https://frostchildren.bandcamp.com/merch",
     key: "Merch",
     displayTitle: "MERCH",
   },
