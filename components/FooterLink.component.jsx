@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 
-const FooterLink = ({ link, displayTitle }) => {
-  const [hoverColor, setHoverColor] = useState("white");
+const FooterLink = ({ link, displayTitle, onClick }) => {
+  const [hoverColor, setHoverColor] = React.useState("white");
 
   const albumCoverColors = ["#b9d4ff", "#a25b6c", "#175B28"];
 
@@ -12,20 +12,22 @@ const FooterLink = ({ link, displayTitle }) => {
       : setHoverColor("white");
   };
 
+  const handleClick = (e) => {
+    if (onClick) {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
   return (
     <a
       href={link}
-      target={link.includes("http") ? "_blank" : "_self"}
-      rel="noopener noreferrer"
       className="py-4 text-8xl text-center"
       onMouseEnter={() => toggleLinkColor(true)}
       onMouseLeave={() => toggleLinkColor(false)}
+      onClick={handleClick}
     >
-      {/* <SocialIcon icon={link.title} /> */}
-      <p
-        className="font-aero font-bold transition duration-500 ease-in-out"
-        style={{ color: `${hoverColor}` }}
-      >
+      <p className="font-aero font-bold transition duration-500 ease-in-out">
         {displayTitle}
       </p>
     </a>

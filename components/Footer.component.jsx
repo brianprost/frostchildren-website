@@ -1,19 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import FooterLink from "./FooterLink.component";
-import SocialIcon from "./SocialIcon.component";
+import MerchModal from "./MerchModal.component";
 
 const Footer = () => {
-  const [merchLink, setMerchLink] = useState("");
-
-  useEffect(() => {
-    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const isEuropeOrUK = /^(Europe|GB)\//.test(userTimeZone);
-    setMerchLink(
-      isEuropeOrUK
-        ? "https://stores.allotment.pro/frost-children/"
-        : "https://frost-children.myshopify.com/"
-    );
-  }, []);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const links = [
     {
@@ -22,9 +12,10 @@ const Footer = () => {
       displayTitle: "TOUR",
     },
     {
-      link: merchLink,
+      link: "#",
       key: "Merch",
       displayTitle: "MERCH",
+      onClick: () => setIsModalOpen(true),
     },
     {
       link: "https://songwhip.com/frostchildren",
@@ -61,9 +52,11 @@ const Footer = () => {
             key={`FooterLinkTo${link.key}`}
             link={link.link}
             displayTitle={link.displayTitle}
+            onClick={link.onClick}
           />
         ))}
       </div>
+      <MerchModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </section>
   );
 };
