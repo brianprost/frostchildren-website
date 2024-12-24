@@ -1,0 +1,23 @@
+---
+import Layout from "../layouts/Layout.astro";
+import NavLink from "../components/NavLink.astro";
+---
+
+<Layout title="Frost Children - Merch">
+  <h1
+    class="flex font-black text-white text-8xl justify-center font-anton my-4"
+  >
+    MERCH
+  </h1>
+  <section class="container mx-auto max-w-4xl px-4">
+    <div class="flex flex-col items-center gap-8 mt-12">
+      <h2 class="text-white text-4xl font-anton text-center lg:mb-20">
+        SELECT YOUR REGION
+      </h2>
+      <div class="flex flex-col sm:flex-row gap-16 justify-center w-full">
+        <NavLink href="https://frostchildren.myshopify.com" text="US STORE" />
+        <NavLink href="https://frostchildren.uk" text="EU/UK STORE" />
+      </div>
+    </div>
+  </section>
+</Layout>

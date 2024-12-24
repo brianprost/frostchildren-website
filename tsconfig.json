@@ -1,35 +1,3 @@
 {
-  "compilerOptions": {
-    "module": "esnext",
-    "esModuleInterop": true,
-    "target": "ES2022",
-    "moduleResolution": "Node",
-    "outDir": "dist",
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "isolatedModules": true,
-    "strict": true,
-    "noImplicitAny": true,
-    "useUnknownInCatchVariables": false,
-    "inlineSourceMap": true,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "noEmit": true,
-    "incremental": true,
-    "resolveJsonModule": true,
-    "jsx": "preserve"
-  },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "extends": "astro/tsconfigs/base"
 }

@@ -1,0 +1,43 @@
+---
+import Layout from "../layouts/Layout.astro";
+import NavLink from "../components/NavLink.astro";
+// import DvdScreen from "../components/DvdScreen.svelte";
+---
+
+<Layout title="Frost Children - Music">
+  <main class="min-h-screen flex items-center justify-center p-4 sm:p-8">
+    <div
+      class="w-full max-w-4xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-8 px-4"
+    >
+      <div class="h-full flex-1">
+        <img
+          src="/abrys.webp"
+          alt="Photo of the Abrys logo for Frost Children"
+          class="max-w-[400px] w-full h-auto"
+        />
+        <!-- <DvdScreen
+          imagePath={"/abrys-dvd.png"}
+          imageWidth={200}
+          imageHeight={200}
+          client:load
+        /> -->
+      </div>
+      <nav
+        class="flex flex-col gap-[3vh] items-center w-full lg:w-auto lg:items-end"
+      >
+        <NavLink href="/tour" text="TOUR" />
+        <NavLink href="/merch" text="MERCH" />
+        <NavLink href="https://songwhip.com/frostchildren" text="MUSIC" />
+        <NavLink
+          href="https://digital.umusic.com/frostchildren-signup"
+          text="NEWSLETTER"
+        />
+        <NavLink href="https://discord.gg/qZn6BqJXej" text="DISCORD" />
+        <NavLink
+          href="https://www.patreon.com/FROSTCHILDREN907"
+          text="PATREON"
+        />
+      </nav>
+    </div>
+  </main>
+</Layout>
