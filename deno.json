@@ -1,0 +1,8 @@
+{
+  "lint": {
+    "exclude": ["dist/", ".nuxt", ".output", ".wrangler", "node_modules"]
+  },
+  "fmt": {
+    "exclude": ["dist/", ".nuxt", ".output", ".wrangler", "node_modules"]
+  }
+}

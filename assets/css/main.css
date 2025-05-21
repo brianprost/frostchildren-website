@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .profile-link {
+    @apply text-sister-red hover:underline transition-all duration-200
+      inline-block;
+  }
+
+  .nav-link {
+    @apply block w-full py-2 px-4 hover:bg-sister-red-lightest transition-colors
+      duration-200;
+  }
+
+  .section-header {
+    @apply bg-sister-red-lighter text-white font-semibold p-2 flex items-center;
+  }
+
+  .feed-item {
+    @apply border-b border-gray-200 py-3 last:border-b-0
+      hover:bg-sister-red-lightest transition-colors duration-200;
+  }
+
+  .share-button {
+    @apply inline-flex items-center justify-center px-3 py-1 border
+      border-sister-red-lighter text-sister-red rounded
+      hover:bg-sister-red-lightest transition-colors duration-200;
+  }
+}
+
+body {
+  @apply bg-sister-bg;
+}
