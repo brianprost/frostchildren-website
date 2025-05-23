@@ -1,12 +1,17 @@
 <script setup>
+import { ref } from 'vue';
+
+const showMerchDialog = ref(false);
+
 const links = [
   { label: 'Music', url: 'https://songwhip.com/frostchildren' },
-  { label: "Merch (us)", url: "https://frost-children.myshopify.com/" },
-  { label: "Merch (eu/uk)", url: "https://stores.allotment.pro/frost-children/" },
-  { label: 'Newsletter', url: 'https://digital.umusic.com/frostchildren-signup' },
-  { label: 'Discord', url: 'https://discord.gg/qZn6BqJXej' },
-  { label: 'Patreon', url: 'https://www.patreon.com/FROSTCHILDREN907' },
-]
+  { label: "Merch", url: null, action: () => showMerchDialog.value = true },
+];
+
+const navigateToStore = (url) => {
+  window.open(url, '_blank');
+  showMerchDialog.value = false;
+};
 </script>
 
 <template>
@@ -21,33 +26,64 @@ const links = [
       <nav class="py-0.5">
         <ul>
           <li v-for="(link, index) in links" :key="index">
-            <NuxtLink :to="link.url" class="py-1 text-sm profile-link">
+            <NuxtLink 
+              v-if="link.url" 
+              :to="link.url" 
+              class="py-1 text-sm profile-link"
+            >
               {{ link.label }}
             </NuxtLink>
+            <a 
+              v-else 
+              href="#" 
+              @click.prevent="link.action" 
+              class="py-1 text-sm profile-link"
+            >
+              {{ link.label }}
+            </a>
             <div v-if="index < links.length - 1" class="border-b border-gray-200"></div>
           </li>
         </ul>
       </nav>
       
-      <div class="mt-4 section-header bg-fb-red p-2 text-white font-medium text-sm flex items-center">
-        <span class="transform inline-flex mr-2">▼</span>
-        Upcoming release
+
+    </div>
+  </div>
+  
+  <!-- Merchandise Store Selection Dialog -->
+  <div v-if="showMerchDialog" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full mx-4">
+      <h3 class="text-lg font-semibold mb-4">Select Store</h3>
+      <p class="text-sm text-gray-600 mb-4">Please select your preferred store based on your location:</p>
+      
+      <div class="grid grid-cols-2 gap-4">
+        <button 
+          @click="navigateToStore('https://frost-children.myshopify.com/')"
+          class="bg-fb-red hover:bg-red-700 text-white py-2 px-4 rounded text-sm font-medium"
+        >
+          US Store
+        </button>
+        <button 
+          @click="navigateToStore('https://stores.allotment.pro/frost-children/')"
+          class="bg-fb-red hover:bg-red-700 text-white py-2 px-4 rounded text-sm font-medium"
+        >
+          EU/UK Store
+        </button>
       </div>
-        <div class="flex items-center p-3">
-          <img 
-            src="/sister-cover.png" 
-            alt="Album Cover" 
-            class="w-12 h-12 object-cover rounded"
-          />
-          <div class="ml-3">
-            <h4 class="font-semibold text-sm">Sister</h4>
-            <p class="text-xs text-gray-600 mt-0.5">Coming: August 2025</p>
-            <a href="https://songwhip.com/frostchildren" target="_blank" class="mt-1 text-xs hover:underline font-medium">
-              Pre-save now (i hate this fucking term)
-            </a>
-          </div>
-      </div>
+      
+      <button 
+        @click="showMerchDialog = false"
+        class="mt-4 w-full text-gray-600 hover:text-gray-800 text-sm py-1"
+      >
+        Cancel
+      </button>
     </div>
   </div>
 </template>
+
+<style scoped>
+.bg-fb-red {
+  background-color: #B22222;
+}
+</style>
 
