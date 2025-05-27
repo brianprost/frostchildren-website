@@ -1,17 +1,17 @@
 <script setup>
-import { ref } from 'vue';
+// import { ref } from 'vue';
 
-const showMerchDialog = ref(false);
+// const showMerchDialog = ref(false);
 
-const links = [
-  { label: 'Music', url: 'https://songwhip.com/frostchildren' },
-  { label: "Merch", url: null, action: () => showMerchDialog.value = true },
-];
+// const links = [
+//   { label: 'Music', url: 'https://songwhip.com/frostchildren' },
+//   { label: "Merch", url: null, action: () => showMerchDialog.value = true },
+// ];
 
-const navigateToStore = (url) => {
-  window.open(url, '_blank');
-  showMerchDialog.value = false;
-};
+// const navigateToStore = (url) => {
+//   window.open(url, '_blank');
+//   showMerchDialog.value = false;
+// };
 </script>
 
 <template>
@@ -22,7 +22,7 @@ const navigateToStore = (url) => {
       class="w-full aspect-square object-cover rounded-md shadow-md hover:opacity-95 transition-opacity duration-300 mb-4"
     />
     
-    <div class="overflow-hidden">      
+    <!-- <div class="overflow-hidden">      
       <nav class="py-0.5">
         <ul>
           <li v-for="(link, index) in links" :key="index">
@@ -47,7 +47,7 @@ const navigateToStore = (url) => {
       </nav>
       
 
-    </div>
+    </div> -->
   </div>
   
   <!-- Merchandise Store Selection Dialog -->

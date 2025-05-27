@@ -10,11 +10,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        "sister-red": "#800000",
-        "sister-green": "#B6D250",
-        "sister-red-lighter": "#A52A2A",
-        "sister-red-lightest": "#FFE4E1",
-        "sister-bg": "#F7F7F7",
+        "fcs-red": "#800000",
+        "fcs-green": "#B6D250",
+        "fcs-red-lighter": "#A52A2A",
+        "fcs-red-lightest": "#FFE4E1",
+        "fcs-bg": "#F7F7F7",
       },
       fontFamily: {
         // sans: ['Nippo', 'sans-serif'],

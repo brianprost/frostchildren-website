@@ -9,16 +9,16 @@
       <div v-for="(update, index) in updates" :key="index" class="feed-item">
         <div class="flex">
           <div class="w-10 h-10 flex-shrink-0">
-            <div v-if="update.type === 'video'" class="w-8 h-8 bg-sister-red-lighter text-white flex items-center justify-center rounded">
+            <div v-if="update.type === 'video'" class="w-8 h-8 bg-fcs-red-lighter text-white flex items-center justify-center rounded">
               🎬
             </div>
-            <div v-else-if="update.type === 'event'" class="w-8 h-8 bg-sister-red-lighter text-white flex items-center justify-center rounded">
+            <div v-else-if="update.type === 'event'" class="w-8 h-8 bg-fcs-red-lighter text-white flex items-center justify-center rounded">
               📅
             </div>
-            <div v-else-if="update.type === 'photo'" class="w-8 h-8 bg-sister-red-lighter text-white flex items-center justify-center rounded">
+            <div v-else-if="update.type === 'photo'" class="w-8 h-8 bg-fcs-red-lighter text-white flex items-center justify-center rounded">
               📷
             </div>
-            <div v-else class="w-8 h-8 bg-sister-red-lighter text-white flex items-center justify-center rounded">
+            <div v-else class="w-8 h-8 bg-fcs-red-lighter text-white flex items-center justify-center rounded">
               📢
             </div>
           </div>
@@ -36,7 +36,7 @@
                 <img :src="update.thumbnail" :alt="update.title" class="w-full h-full object-cover" />
                 <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity duration-200">
                   <div class="w-16 h-16 rounded-full bg-white bg-opacity-80 flex items-center justify-center">
-                    <div class="w-0 h-0 border-t-8 border-t-transparent border-l-12 border-l-sister-red border-b-8 border-b-transparent ml-1"></div>
+                    <div class="w-0 h-0 border-t-8 border-t-transparent border-l-12 border-l-fcs-red border-b-8 border-b-transparent ml-1"></div>
                   </div>
                 </div>
               </div>
