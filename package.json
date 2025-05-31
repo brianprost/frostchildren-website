@@ -24,6 +24,8 @@
   },
   "trustedDependencies": [
     "@parcel/watcher",
-    "esbuild"
+    "esbuild",
+    "sharp",
+    "workerd"
   ]
 }
