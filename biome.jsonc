@@ -1,0 +1,5 @@
+{
+	"files": {
+		"ignore": ["dist/", ".nuxt", ".output", ".wrangler", "node_modules"]
+	}
+}
