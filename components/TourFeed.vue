@@ -18,7 +18,7 @@ onMounted(() => {
       ></div>
 
       <template #fallback>
-        <p>Loading tour feed...</p>
+        <p>Tracking Frost Children...</p>
       </template>
     </ClientOnly>
   </section>
