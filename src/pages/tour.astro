@@ -1,17 +1,7 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import TourComponent from "@components/Tour.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
 ---
-
-<Layout title="Frost Children - Tour">
-    <h1 class="flex font-black text-white text-8xl justify-center font-anton my-4">TOUR</h1>
-    <section class="container mx-auto max-w-4xl">
-        <div
-        id="seated-55fdf2c0"
-        data-artist-id="0dd41d4d-c9b0-41a5-b3a1-49f5d9d810b1"
-        data-css-version="2"
-        class="text-white"
-        >
-    </div>
-    <script is:inline src="https://widget.seated.com/app.js"></script>
-</section>
-</Layout>
+<BaseLayout title="Tour - Frost Children" description="Frost Children's tour schedule">
+    <TourComponent />
+</BaseLayout>
