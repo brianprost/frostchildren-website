@@ -1,0 +1,203 @@
+---
+// No server-side logic needed for this component
+---
+
+<!-- Mailing List Signup Section -->
+<section class="py-8 mt-8">
+	<div class="container mx-auto px-4 max-w-lg">
+		<div class="mb-6">
+			<h2 class="text-xl font-bold mb-2">
+				Join our mailing list
+			</h2>
+			<p class="text-sm">
+				Get updates on tour dates and releases.
+			</p>
+		</div>
+		
+		<!-- Mailing list embed container -->
+		<div class="mailing-form-container">
+			<div class="_form_125"></div>
+		</div>
+		
+		<!-- Privacy policy link -->
+		<p class="text-xs mt-4">
+			By subscribing, you agree to our 
+			<a 
+				href="https://dirtyhit.co.uk/privacy-policy" 
+				target="_blank" 
+				rel="noopener noreferrer"
+				class="underline"
+			>
+				Privacy Policy
+			</a>
+		</p>
+	</div>
+</section>
+
+<script>
+	// Load the mailing list form script
+	const script = document.createElement('script');
+	script.src = 'https://dirtyhit.activehosted.com/f/embed.php?id=125';
+	script.charset = 'utf-8';
+	document.head.appendChild(script);
+</script>
+
+<style>
+	/* Minimal web 1.0 styling for the mailing list form */
+	:global(.mailing-form-container) {
+        background: var(--color-fcs-red) !important;
+		border: 1px solid #ccc;
+		padding: 16px;
+		background: #fff;
+	}
+	
+	:global([data-theme="dark"] .mailing-form-container) {
+		background: #000;
+		border-color: #666;
+	}
+	
+	/* Override ActiveCampaign form styles - minimal web 1.0 */
+	:global(._form_125 form) {
+		background: transparent !important;
+		border: none !important;
+		box-shadow: none !important;
+		padding: 0 !important;
+		margin: 0 !important;
+	}
+	
+	:global(._form_125 input[type="text"], 
+			._form_125 input[type="email"]) {
+		background: #fff !important;
+		border: 1px solid #999 !important;
+		border-radius: 0 !important;
+		padding: 8px !important;
+		font-size: 14px !important;
+		color: #000 !important;
+		width: 100% !important;
+		margin-bottom: 8px !important;
+		font-family: serif !important;
+	}
+	
+	:global([data-theme="dark"] ._form_125 input[type="text"], 
+			[data-theme="dark"] ._form_125 input[type="email"]) {
+		background: #000 !important;
+		border-color: #666 !important;
+		color: #fff !important;
+	}
+	
+	:global(._form_125 input[type="text"]:focus, 
+			._form_125 input[type="email"]:focus) {
+		outline: 1px solid #000 !important;
+		border-color: #000 !important;
+		box-shadow: none !important;
+		transform: none !important;
+	}
+	
+	:global([data-theme="dark"] ._form_125 input[type="text"]:focus, 
+			[data-theme="dark"] ._form_125 input[type="email"]:focus) {
+		outline-color: #fff !important;
+		border-color: #fff !important;
+	}
+	
+	:global(._form_125 input[type="submit"], 
+			._form_125 button[type="submit"]) {
+		background: #000 !important;
+		color: #fff !important;
+		border: 1px solid #000 !important;
+		border-radius: 0 !important;
+		padding: 8px 16px !important;
+		font-size: 14px !important;
+		font-weight: normal !important;
+		cursor: pointer !important;
+		width: 100% !important;
+		margin-top: 8px !important;
+		font-family: serif !important;
+		text-transform: none !important;
+		letter-spacing: normal !important;
+	}
+	
+	:global([data-theme="dark"] ._form_125 input[type="submit"], 
+			[data-theme="dark"] ._form_125 button[type="submit"]) {
+		background: #fff !important;
+		color: #000 !important;
+		border-color: #fff !important;
+	}
+	
+	:global(._form_125 input[type="submit"]:hover, 
+			._form_125 button[type="submit"]:hover) {
+		background: #333 !important;
+		transform: none !important;
+		box-shadow: none !important;
+	}
+	
+	:global([data-theme="dark"] ._form_125 input[type="submit"]:hover, 
+			[data-theme="dark"] ._form_125 button[type="submit"]:hover) {
+		background: #ccc !important;
+	}
+	
+	:global(._form_125 input[type="submit"]:active, 
+			._form_125 button[type="submit"]:active) {
+		transform: none !important;
+	}
+	
+	:global(._form_125 label) {
+		color: #000 !important;
+		font-size: 14px !important;
+		font-weight: normal !important;
+		margin-bottom: 4px !important;
+		display: block !important;
+		font-family: serif !important;
+	}
+	
+	:global([data-theme="dark"] ._form_125 label) {
+		color: #fff !important;
+	}
+	
+	:global(._form_125 .form-field) {
+		margin-bottom: 12px !important;
+	}
+	
+	:global(._form_125 div) {
+		font-family: serif !important;
+	}
+	
+	/* Hide any default branding or styling */
+	:global(._form_125 .form-header),
+	:global(._form_125 .form-footer),
+	:global(._form_125 .powered-by) {
+		display: none !important;
+	}
+	
+	/* Style error messages */
+	:global(._form_125 .error) {
+		color: #f00 !important;
+		font-size: 12px !important;
+		margin-top: 4px !important;
+		font-weight: normal !important;
+		font-family: serif !important;
+	}
+	
+	/* Style success messages */
+	:global(._form_125 .success) {
+		color: #000 !important;
+		font-size: 14px !important;
+		padding: 8px !important;
+		background: #fff !important;
+		border: 1px solid #000 !important;
+		font-weight: normal !important;
+		font-family: serif !important;
+	}
+	
+	:global([data-theme="dark"] ._form_125 .success) {
+		background: #000 !important;
+		border-color: #fff !important;
+		color: #fff !important;
+	}
+	
+	/* Placeholder styling */
+	:global(._form_125 input::placeholder) {
+		color: #999 !important;
+		opacity: 1 !important;
+		font-family: serif !important;
+	}
+</style>
