@@ -57,9 +57,11 @@
 	const dialog = document.getElementById('mailing-dialog') as HTMLElement;
 	const closeButton = document.getElementById('close-dialog') as HTMLElement;
 	
-	// Track if dialog has been shown to avoid showing it multiple times
+	// Track dialog state
 	let hasShownDialog = false;
 	let isDialogOpen = false;
+	let lastScrollDirection = 'down';
+	let lastScrollTop = 0;
 
 	// Function to show dialog
 	function showDialog() {
@@ -95,6 +97,9 @@
 			dialogContent.classList.remove('scale-100');
 			dialogContent.classList.add('scale-95');
 		}
+		
+		// Reset hasShownDialog so it can show again if user scrolls down
+		hasShownDialog = false;
 	}
 
 	// Close dialog event listeners
@@ -114,37 +119,52 @@
 		}
 	});
 
-	// Scroll detection to show dialog when approaching bottom
+	// Enhanced scroll detection with direction tracking
 	function handleScroll() {
-		if (hasShownDialog) return;
-		
 		const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 		const windowHeight = window.innerHeight;
 		const documentHeight = document.documentElement.scrollHeight;
-		
-		// Show dialog when user has scrolled 80% of the page
 		const scrollPercentage = (scrollTop + windowHeight) / documentHeight;
 		
-		if (scrollPercentage >= 0.8) {
-			showDialog();
-			// Remove scroll listener after showing dialog
-			window.removeEventListener('scroll', handleScroll);
+		// Determine scroll direction
+		const scrollDirection = scrollTop > lastScrollTop ? 'down' : 'up';
+		lastScrollTop = scrollTop;
+		
+		// Only show if we're scrolling down and haven't shown yet
+		if (scrollDirection === 'down' && !hasShownDialog && !isDialogOpen) {
+			// More conservative threshold for mobile vs desktop
+			const isMobile = window.innerWidth <= 768;
+			const threshold = isMobile ? 0.9 : 0.8; // Higher threshold for mobile
+			
+			if (scrollPercentage >= threshold) {
+				showDialog();
+			}
+		}
+		
+		// Hide dialog if scrolling up and it's open
+		if (scrollDirection === 'up' && isDialogOpen && scrollPercentage < 0.7) {
+			hideDialog();
 		}
 	}
 
-	// Add scroll listener
+	// Add scroll listener (keep it active to handle scroll direction changes)
 	window.addEventListener('scroll', handleScroll);
 	
-	// Also check on page load in case the page is short
+	// Check for short pages with more conservative mobile handling
 	document.addEventListener('DOMContentLoaded', () => {
-		// Small delay to ensure page is fully rendered
 		setTimeout(() => {
 			const documentHeight = document.documentElement.scrollHeight;
 			const windowHeight = window.innerHeight;
+			const isMobile = window.innerWidth <= 768;
 			
-			// If page is shorter than viewport, show dialog after a delay
+			// For short pages, be more conservative on mobile
 			if (documentHeight <= windowHeight * 1.2) {
-				setTimeout(showDialog, 3000); // Show after 3 seconds for short pages
+				const delay = isMobile ? 8000 : 5000; // Longer delay on mobile
+				setTimeout(() => {
+					if (!hasShownDialog && !isDialogOpen) {
+						showDialog();
+					}
+				}, delay);
 			}
 		}, 100);
 	});
