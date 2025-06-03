@@ -13,9 +13,9 @@
 		"lint": "eslint ."
 	},
 	"dependencies": {
+		"@astrojs/cloudflare": "^12.5.3",
 		"@astrojs/react": "4.3.0",
 		"@astrojs/sitemap": "3.4.0",
-		"@astrojs/vercel": "^8.1.4",
 		"@keystatic/astro": "5.0.6",
 		"@keystatic/core": "0.5.47",
 		"@tailwindcss/forms": "0.5.10",
