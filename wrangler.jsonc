@@ -12,11 +12,11 @@
 	},
 	"routes": [
 		{
-			"pattern": "frostchildren.xyz/*",
+			"pattern": "frostchildren.xyz",
 			"custom_domain": true
 		},
 		{
-			"pattern": "www.frostchildren.xyz/*",
+			"pattern": "www.frostchildren.xyz",
 			"custom_domain": true
 		}
 	]
