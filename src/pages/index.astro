@@ -12,8 +12,6 @@ const bio = await getCollection("bio");
 const profile = bio[0];
 const { name, avatar, albumArtwork } = profile.data;
 const { Content } = await render(profile);
-
-const isControlReleaseDay = new Date().toISOString() >= "2025-06-03T03:00:00Z";
 ---
 
 <BaseLayout
@@ -51,7 +49,7 @@ const isControlReleaseDay = new Date().toISOString() >= "2025-06-03T03:00:00Z";
 						</div>
 					</div>
 					{
-						isControlReleaseDay && (
+						profile.body && (
 							<div class="flex justify-center items-center">
 								<div class="flex items-center gap-4">
 									<Image
