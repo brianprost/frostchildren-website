@@ -1,0 +1,279 @@
+---
+// No server-side logic needed for this component
+---
+
+<!-- Mailing List Dialog -->
+<div
+	id="mailing-dialog"
+	class="fixed inset-0 bg-black/50 bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300"
+	data-mailing-dialog
+>
+	<div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6 transform scale-95 transition-transform duration-300">
+		<div class="flex justify-between items-center mb-4">
+			<h2 class="text-xl font-bold text-gray-900 dark:text-white">
+				Join mailing list
+			</h2>
+			<button
+				id="close-dialog"
+				class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl leading-none"
+				aria-label="Close dialog"
+			>
+				&times;
+			</button>
+		</div>
+		
+		<p class="text-gray-600 dark:text-gray-300 mb-4">
+			Get the latest updates on Frost Children's tour dates and releases.
+		</p>
+		
+		<!-- Mailing list embed container with custom styling -->
+		<div class="mailing-form-container mb-4">
+			<div class="_form_125"></div>
+		</div>
+		
+		<!-- Privacy policy link -->
+		<p class="text-xs text-gray-500 dark:text-gray-400 text-center">
+			By subscribing, you agree to our 
+			<a 
+				href="https://dirtyhit.co.uk/privacy-policy" 
+				target="_blank" 
+				rel="noopener noreferrer"
+				class="text-fcs-red hover:text-fcs-red-lighter underline"
+			>
+				Privacy Policy
+			</a>
+		</p>
+	</div>
+</div>
+
+<script>
+	// Load the mailing list form script
+	const script = document.createElement('script');
+	script.src = 'https://dirtyhit.activehosted.com/f/embed.php?id=125';
+	script.charset = 'utf-8';
+	document.head.appendChild(script);
+
+	// Dialog elements
+	const dialog = document.getElementById('mailing-dialog') as HTMLElement;
+	const closeButton = document.getElementById('close-dialog') as HTMLElement;
+	
+	// Track if dialog has been shown to avoid showing it multiple times
+	let hasShownDialog = false;
+	let isDialogOpen = false;
+
+	// Function to show dialog
+	function showDialog() {
+		if (hasShownDialog || isDialogOpen) return;
+		
+		hasShownDialog = true;
+		isDialogOpen = true;
+		
+		dialog.classList.remove('opacity-0', 'pointer-events-none');
+		dialog.classList.add('opacity-100', 'pointer-events-auto');
+		
+		const dialogContent = dialog.querySelector('div');
+		if (dialogContent) {
+			dialogContent.classList.remove('scale-95');
+			dialogContent.classList.add('scale-100');
+		}
+		
+		// Focus management for accessibility
+		closeButton.focus();
+	}
+
+	// Function to hide dialog
+	function hideDialog() {
+		if (!isDialogOpen) return;
+		
+		isDialogOpen = false;
+		
+		dialog.classList.remove('opacity-100', 'pointer-events-auto');
+		dialog.classList.add('opacity-0', 'pointer-events-none');
+		
+		const dialogContent = dialog.querySelector('div');
+		if (dialogContent) {
+			dialogContent.classList.remove('scale-100');
+			dialogContent.classList.add('scale-95');
+		}
+	}
+
+	// Close dialog event listeners
+	closeButton.addEventListener('click', hideDialog);
+	
+	// Close dialog when clicking outside
+	dialog.addEventListener('click', (e) => {
+		if (e.target === dialog) {
+			hideDialog();
+		}
+	});
+
+	// Close dialog with Escape key
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && isDialogOpen) {
+			hideDialog();
+		}
+	});
+
+	// Scroll detection to show dialog when approaching bottom
+	function handleScroll() {
+		if (hasShownDialog) return;
+		
+		const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+		const windowHeight = window.innerHeight;
+		const documentHeight = document.documentElement.scrollHeight;
+		
+		// Show dialog when user has scrolled 80% of the page
+		const scrollPercentage = (scrollTop + windowHeight) / documentHeight;
+		
+		if (scrollPercentage >= 0.8) {
+			showDialog();
+			// Remove scroll listener after showing dialog
+			window.removeEventListener('scroll', handleScroll);
+		}
+	}
+
+	// Add scroll listener
+	window.addEventListener('scroll', handleScroll);
+	
+	// Also check on page load in case the page is short
+	document.addEventListener('DOMContentLoaded', () => {
+		// Small delay to ensure page is fully rendered
+		setTimeout(() => {
+			const documentHeight = document.documentElement.scrollHeight;
+			const windowHeight = window.innerHeight;
+			
+			// If page is shorter than viewport, show dialog after a delay
+			if (documentHeight <= windowHeight * 1.2) {
+				setTimeout(showDialog, 3000); // Show after 3 seconds for short pages
+			}
+		}, 100);
+	});
+</script>
+
+<style>
+	/* Ensure the dialog appears above other content */
+	[data-mailing-dialog] {
+		z-index: 9999;
+	}
+	
+	/* Style for the embedded form container */
+	:global(._form_125) {
+		min-height: 200px;
+	}
+	
+	/* Custom styling for the mailing list form */
+	:global(.mailing-form-container) {
+		background: var(--color-fcs-red);
+		border-radius: 8px;
+		padding: 16px;
+	}
+	
+	:global([data-theme="dark"] .mailing-form-container) {
+		background: #374151;
+	}
+	
+	/* Override ActiveCampaign form styles */
+	:global(._form_125 form) {
+		background: transparent !important;
+		border: none !important;
+		box-shadow: none !important;
+		padding: 0 !important;
+		margin: 0 !important;
+	}
+	
+	:global(._form_125 input[type="text"], 
+			._form_125 input[type="email"]) {
+		background: white !important;
+		border: 2px solid #d1d5db !important;
+		border-radius: 6px !important;
+		padding: 12px !important;
+		font-size: 14px !important;
+		color: #374151 !important;
+		width: 100% !important;
+		margin-bottom: 12px !important;
+		transition: border-color 0.2s ease !important;
+	}
+	
+	:global([data-theme="dark"] ._form_125 input[type="text"], 
+			[data-theme="dark"] ._form_125 input[type="email"]) {
+		background: #1f2937 !important;
+		border-color: #4b5563 !important;
+		color: #e5e7eb !important;
+	}
+	
+	:global(._form_125 input[type="text"]:focus, 
+			._form_125 input[type="email"]:focus) {
+		outline: none !important;
+		border-color: #800000 !important;
+		box-shadow: 0 0 0 3px rgba(128, 0, 0, 0.1) !important;
+	}
+	
+	:global(._form_125 input[type="submit"], 
+			._form_125 button[type="submit"]) {
+		background: #800000 !important;
+		color: white !important;
+		border: none !important;
+		border-radius: 6px !important;
+		padding: 12px 24px !important;
+		font-size: 14px !important;
+		font-weight: 600 !important;
+		cursor: pointer !important;
+		width: 100% !important;
+		transition: background-color 0.2s ease !important;
+	}
+	
+	:global(._form_125 input[type="submit"]:hover, 
+			._form_125 button[type="submit"]:hover) {
+		background: #a52a2a !important;
+	}
+	
+	:global(._form_125 label) {
+		color: #374151 !important;
+		font-size: 14px !important;
+		font-weight: 500 !important;
+		margin-bottom: 6px !important;
+		display: block !important;
+	}
+	
+	:global([data-theme="dark"] ._form_125 label) {
+		color: #e5e7eb !important;
+	}
+	
+	:global(._form_125 .form-field) {
+		margin-bottom: 16px !important;
+	}
+	
+	:global(._form_125 div) {
+		font-family: inherit !important;
+	}
+	
+	/* Hide any default branding or styling */
+	:global(._form_125 .form-header),
+	:global(._form_125 .form-footer),
+	:global(._form_125 .powered-by) {
+		display: none !important;
+	}
+	
+	/* Style error messages */
+	:global(._form_125 .error) {
+		color: #dc2626 !important;
+		font-size: 12px !important;
+		margin-top: 4px !important;
+	}
+	
+	/* Style success messages */
+	:global(._form_125 .success) {
+		color: #059669 !important;
+		font-size: 14px !important;
+		padding: 12px !important;
+		background: #d1fae5 !important;
+		border-radius: 6px !important;
+		border: 1px solid #a7f3d0 !important;
+	}
+	
+	:global([data-theme="dark"] ._form_125 .success) {
+		background: #064e3b !important;
+		border-color: #047857 !important;
+		color: #a7f3d0 !important;
+	}
+</style>

@@ -2,6 +2,7 @@
 import "@/styles/global.css";
 
 import BaseHead from "@layouts/BaseHead.astro";
+import MailingListDialog from "@components/MailingListDialog.astro";
 import { getCollection } from "astro:content";
 
 const bio = await getCollection("bio");
@@ -35,5 +36,6 @@ const { title, description, image, noindex = false } = Astro.props as Props;
 		<main class="container mx-auto px-4 py-6 selection:bg-fcs-green">
 			<slot />
 		</main>
+		<MailingListDialog />
 	</body>
 </html>

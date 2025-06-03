@@ -1,6 +1,7 @@
 ---
 import Links from "@components/Links/Links.astro";
 import Socials from "@components/Socials/Socials.astro";
+import MailingListDialog from "@components/MailingListDialog.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { Image } from "astro:assets";
 import { getCollection, render } from "astro:content";
@@ -60,4 +61,7 @@ const { Content } = await render(profile);
 			</div>
 		</div>
 	</section>
+	
+	<!-- Mailing List Dialog -->
+	<MailingListDialog />
 </BaseLayout>
