@@ -9,7 +9,7 @@ import vercel from "@astrojs/vercel";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://frostchildren.xyz",
+  site: "https://www.frostchildren.xyz",
 
   redirects: {
       "/admin": "/keystatic",
