@@ -73,6 +73,13 @@ export default config({
 						isRequired: true
 					}
 				}),
+				albumArtwork: fields.image({
+					label: "Album Artwork",
+					publicPath: "./",
+					validation: {
+						isRequired: true
+					}
+				})
 			}
 		})
 	},

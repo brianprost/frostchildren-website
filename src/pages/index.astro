@@ -10,7 +10,7 @@ import Tour from "@components/Tour.astro";
 const bio = await getCollection("bio");
 
 const profile = bio[0];
-const { name, avatar } = profile.data;
+const { name, avatar, albumArtwork } = profile.data;
 const { Content } = await render(profile);
 ---
 
@@ -49,10 +49,35 @@ const { Content } = await render(profile);
 						</div>
 					</div>
 					{
-						profile.body && (
-							<i class="text-center opacity-80">
-								<Content />
-							</i>
+						(new Date().toISOString() >= "2025-06-03T02:510:00Z") && (
+							<div class="flex justify-center items-center">
+								<div class="flex items-center gap-4">
+									<Image
+										src={albumArtwork}
+										alt="Frost Children album artwork"
+										densities={[1.5, 2]}
+										quality="high"
+										loading="eager"
+										class="w-24 h-24 object-cover shadow-md hover:opacity-95 transition-opacity duration-300"
+									/>
+									<div class="flex flex-col">
+										<i class="opacity-80 mb-2">
+											<Content />
+										</i>
+										<div class="flex justify-center">
+										<a
+											href="https://frostchildren.ffm.to/shop"
+											target="_blank"
+											rel="noopener noreferrer"
+											class="inline-block bg-fcs-red hover:bg-fcs-red text-white font-normal text-sm py-1 px-6 rounded shadow transition-colors duration-200 w-1/2 text-center"
+										>
+											Pre-order Now
+										</a>
+
+									</div>
+									</div>
+								</div>
+							</div>
 						)
 					}
 				</div>

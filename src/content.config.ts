@@ -7,7 +7,8 @@ const bioCollection = defineCollection({
 		z.object({
 			name: z.string(),
 			theme: z.enum(["dark", "light"]),
-			avatar: image()
+			avatar: image(),
+			albumArtwork: image(),
 		})
 })
 
