@@ -11,7 +11,7 @@ interface Props {
 	title: string;
 	description: string;
 	image?: ImageMetadata;
-	noindex?: boolean; // you need to opt-in to no indexing, as it hides the page from search engines
+	noindex?: boolean;
 }
 
 const { title, description, image, noindex = false } = Astro.props as Props;
@@ -32,7 +32,7 @@ const { title, description, image, noindex = false } = Astro.props as Props;
 		/>
 	</head>
 	<body id="body" class="min-h-[100lvh] bg-fcs-bg">
-		<main class="container mx-auto px-4 py-6">
+		<main class="container mx-auto px-4 py-6 selection:bg-fcs-green">
 			<slot />
 		</main>
 	</body>
