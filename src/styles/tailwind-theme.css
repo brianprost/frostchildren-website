@@ -1,0 +1,64 @@
+/**
+ * * Tailwind theme settings
+ * 
+ * These are in a separate file so it can be imported into <style> tags in .astro components
+ */
+@theme {
+	/* custom colors */
+	--color-fcs-red: #800000;
+	--color-fcs-green: #B6D250;
+	--color-fcs-red-lighter: #A52A2A;
+	--color-fcs-red-lightest: #FFE4E1;
+	--color-fcs-bg: #F7F7F7;
+
+	/* primary colors */
+	--color-primary-50: var(--color-fcs-red-lightest);
+	--color-primary-100: var(--color-fcs-red-lighter);
+	--color-primary-200: var(--color-fcs-red);
+	--color-primary-300: var(--color-fcs-green);
+	--color-primary-400: var(--color-fcs-green);
+	--color-primary-500: var(--color-fcs-green);
+	--color-primary-600: var(--color-fcs-green);
+	--color-primary-700: var(--color-fcs-green);
+	--color-primary-800: var(--color-fcs-green);
+	--color-primary-900: var(--color-fcs-green);
+	--color-primary-950: var(--color-fcs-green);
+
+	/* base colors */
+	--color-base-50: var(--color-neutral-50);
+	--color-base-100: var(--color-neutral-100);
+	--color-base-200: var(--color-neutral-200);
+	--color-base-300: var(--color-neutral-300);
+	--color-base-400: var(--color-neutral-400);
+	--color-base-500: var(--color-neutral-500);
+	--color-base-600: var(--color-neutral-600);
+	--color-base-700: var(--color-neutral-700);
+	--color-base-800: var(--color-neutral-800);
+	--color-base-900: var(--color-neutral-900);
+	--color-base-950: var(--color-neutral-950);
+
+	/* button styles */
+	--color-btn-light: var(--color-neutral-100);
+	--color-btn-light-text: var(--color-neutral-900);
+	--color-btn-light-hover: var(--color-neutral-200);
+	--color-btn-dark: var(--color-neutral-900);
+	--color-btn-dark-text: var(--color-neutral-200);
+	--color-btn-dark-hover: var(--color-neutral-800);
+
+	/* layout settings */
+	--breakpoint-xs: 400px;
+	--breakpoint-sm: 640px;
+	--breakpoint-md: 768px;
+	--breakpoint-lg: 1024px;
+	--breakpoint-xl: 1280px;
+	--breakpoint-2xl: 1536px;
+
+	/* font families */
+	--font-fallback:
+		"-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica", "Arial", "sans-serif",
+		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	--font-sans: "Times", "Times New Roman", "sans-serif";
+	--font-serif: "EB Garamond", "serif";
+	--font-mono:
+		"SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace";
+}
