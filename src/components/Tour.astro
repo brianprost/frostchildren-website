@@ -1,9 +1,17 @@
-<section class="container mx-auto px-4 sm:px-6 lg:px-8">
+---
+interface Props {
+	class?: string
+}
+
+const className = Astro.props.class
+---
+
+<section class:list={["tour-embed", className]}>
     <div
         id="seated-55fdf2c0"
         data-artist-id="0dd41d4d-c9b0-41a5-b3a1-49f5d9d810b1"
         data-css-version="2"
-        class="text-black dark:text-white"
+        class="tour-embed__widget"
     >
     </div>
     <script is:inline src="https://widget.seated.com/app.js"></script>

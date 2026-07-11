@@ -7,13 +7,20 @@ export interface Props {
 	description: string;
 	image?: ImageMetadata;
 	noindex?: boolean;
+	themeColor?: string;
 }
 
-const { title, description, image, noindex = false } = Astro.props as Props;
+const {
+	title,
+	description,
+	image,
+	noindex = false,
+	themeColor = "#800000"
+} = Astro.props as Props;
 ---
 
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width" initial-scale="1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <!-- Satoshi font example: https://www.fontshare.com/fonts/satoshi -->
 <!-- <link rel="preconnect" href="https://api.fontshare.com" />
@@ -31,7 +38,7 @@ const { title, description, image, noindex = false } = Astro.props as Props;
 <link rel="shortcut icon" href="/favicons/favicon.ico" />
 <meta name="msapplication-TileColor" content="#800000" />
 <meta name="msapplication-config" content="/favicons/browserconfig.xml" />
-<meta name="theme-color" content="#800000" />
+<meta name="theme-color" content={themeColor} />
 
 <!-- other -->
 <meta name="generator" content={Astro.generator} />

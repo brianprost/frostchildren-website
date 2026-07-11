@@ -4,4 +4,5 @@ theme: light
 avatar: ./avatar.jpg
 albumArtwork: ./albumArtwork.jpg
 ---
-SISTER, our third album, out now.
+
+TWEAKER POEM, our new six-song EP, out now.
