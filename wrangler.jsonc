@@ -3,6 +3,7 @@
 	"main": "./dist/_worker.js/index.js",
 	"compatibility_date": "2025-06-02",
 	"compatibility_flags": ["nodejs_compat"],
+	"preview_urls": true,
 	"assets": {
 		"binding": "ASSETS",
 		"directory": "./dist"

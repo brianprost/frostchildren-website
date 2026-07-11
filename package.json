@@ -25,7 +25,8 @@
 		"@biomejs/biome": "^1.9.4",
 		"@eslint/js": "9.26.0",
 		"@playform/compress": "0.1.9",
-		"globals": "16.1.0"
+		"globals": "16.1.0",
+		"wrangler": "4.108.0"
 	},
 	"trustedDependencies": ["@biomejs/biome", "esbuild", "sharp"]
 }
