@@ -4,8 +4,6 @@
 		"strictNullChecks": true,
 		"allowJs": true,
 		"forceConsistentCasingInFileNames": true,
-		"jsx": "react-jsx",
-		"jsxImportSource": "react",
 		"baseUrl": ".",
 		"paths": {
 			"@config/*": ["src/config/*"],
