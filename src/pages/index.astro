@@ -1,13 +1,12 @@
 ---
+import { Image } from "astro:assets"
 import bio from "@/assets/tweaker-poem/bio.jpg"
 import cover from "@/assets/tweaker-poem/cover.jpg"
 import { site } from "@/config/site"
 import MailingListEmbed from "@components/MailingListEmbed.astro"
-import SiteLinks from "@components/SiteLinks.astro"
 import SocialIcon from "@components/Socials/SocialIcon.astro"
 import Tour from "@components/Tour.astro"
 import SiteLayout from "@layouts/SiteLayout.astro"
-import { Image } from "astro:assets"
 ---
 
 <SiteLayout
@@ -100,7 +99,6 @@ import { Image } from "astro:assets"
 					</div>
 					<h2 id="submerged-tour-title">Tour</h2>
 				</header>
-				<SiteLinks class="submerged-links" />
 				<Tour class="submerged-bio__tour-embed" />
 			</div>
 		</section>
@@ -420,20 +418,6 @@ import { Image } from "astro:assets"
 		font: 800 clamp(4rem, 7vw, 7.5rem) / 0.62 "Anybody", sans-serif;
 		letter-spacing: -0.07em;
 		text-transform: uppercase;
-	}
-
-	.submerged-links {
-		margin-top: 1.5rem;
-	}
-
-	.submerged-links ul {
-		margin: 0;
-		padding: 0;
-		list-style: none;
-	}
-
-	.submerged-links a {
-		color: inherit;
 	}
 
 	.submerged-bio__tour-embed {
